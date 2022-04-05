@@ -1,3 +1,5 @@
+"""Generate subproblems."""
+
 import gurobipy as gp
 
 from generator_penalty import (
@@ -20,17 +22,17 @@ def optimize_subproblem(
     penalty_steps,
     scenario,
 ):
-    """Defines and solve an intermediate optimization problem where some variables are fixed
+    """Defines and solve an optimization problem where some variables are fixed.
 
     Parameters
     ----------
-    project_network : networkx.classes.digraph.DiGraph
+    network : networkx.classes.digraph.DiGraph
        Full network diagraph
 
-    crashtime : list
+    crash_time : list
        Activirt crash percentage
 
-    crashcost : list
+    crash_cost : list
        Actitvity crash cost
 
     subproblem : dict
@@ -64,6 +66,9 @@ def optimize_subproblem(
        List of values for all nodes of the graph (including
        start and end) that comprises one scenario
 
+    penalty_steps : __type__
+        Steps used in penalty function.
+
     Returns
     ----------
     scenariodetailslog : dict
@@ -72,7 +77,6 @@ def optimize_subproblem(
        'Regular Costs', 'Project Duration', 'Schedule',
        'Penalty Variables', and all optimal crash values.
     """
-
     # Get number of nodes
     no_of_nodes = network.number_of_nodes()
 

@@ -1,16 +1,22 @@
+"""Find nearest correlation matrix."""
+
 import numpy as np
-from numpy import copy, diag, dot, inf
+from numpy import copy, inf
 from numpy.linalg import norm
 
 
 class ExceededMaxIterationsError(Exception):
+    """Error class for exceeding iterations."""
+
     def __init__(self, msg, matrix=[], iteration=[], ds=[]):
+        """Initialize instance."""
         self.msg = msg
         self.matrix = matrix
         self.iteration = iteration
         self.ds = ds
 
     def __str__(self):
+        """Description string for instance."""
         return repr(self.msg)
 
 
@@ -24,14 +30,13 @@ def nearcorr(
     verbose=False,
     except_on_too_many_iterations=True,
 ):
-    """
+    """Find nearest correlation.
+
     X = nearcorr(A, tol=[], flag=0, max_iterations=100, n_pos_eig=0,
         weights=None, print=0)
 
     Finds the nearest correlation matrix to the symmetric matrix A.
 
-    ARGUMENTS
-    ~~~~~~~~~
     A is a symmetric numpy array or a ExceededMaxIterationsError object
 
     tol is a convergence tolerance, which defaults to 16*EPS.
@@ -58,10 +63,7 @@ def nearcorr(
     number of iterations exceeds max_iterations
     except_on_too_many_iterations = False to silently return the best result
     found after max_iterations number of iterations
-
-
     """
-
     # If input is an ExceededMaxIterationsError object this
     # is a restart computation
     if isinstance(A, ExceededMaxIterationsError):
@@ -130,6 +132,7 @@ def nearcorr(
 
 
 def proj_spd(A):
+    """Projected SPD."""
     # NOTE: the input matrix is assumed to be symmetric
     d, v = np.linalg.eigh(A)
     A = (v * np.maximum(d, 0)).dot(v.T)

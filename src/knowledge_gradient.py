@@ -1,3 +1,5 @@
+"""Main knowledge gradient algotithm methods."""
+
 from functools import partial
 
 import numpy as np
@@ -5,11 +7,7 @@ from scipy.stats import norm
 
 
 def f_func(z):
-    """f function required for KG evaluation
-
-    Parameters
-    ----------
-    z : float
+    """An f function required for KG evaluation.
 
     Returns
     ----------
@@ -19,7 +17,7 @@ def f_func(z):
 
 
 def sigma(S, x, lambda_):
-    """Sigma function
+    """Sigma function.
 
     Parameters
     ----------
@@ -33,7 +31,7 @@ def sigma(S, x, lambda_):
     Returns
     ----------
     numpy.ndarray : numpy.ndarray
-       Vector calculation of \Sigma function
+       Vector calculation of Sigma function
     """
     # Here we have to remember that x indexing goes from 1 to M
     M = S.shape[0]
@@ -44,21 +42,7 @@ def sigma(S, x, lambda_):
 
 
 def update_mu_S(mu_n, S_n, lambda_, x, y_n1):
-    """Get updated mu and S after taking a sample y at subproblem with name x
-
-    Parameters
-    ----------
-    mu_n :
-    S :
-    lambda_ :
-    x :
-    y :
-
-    Returns
-    ----------
-    mu_1 :
-    S_1 :
-    """
+    """Get updated mu and S after taking a sample y at subproblem with name x."""
     # Get e_x: Adjusted indexing starts from 0 here
     M = S_n.shape[0]
     e_x = np.zeros([M, 1])
@@ -77,7 +61,7 @@ def update_mu_S(mu_n, S_n, lambda_, x, y_n1):
 
 
 def algorithm_1(a, b):
-    """Algorithm 1 from paper
+    """Algorithm 1 from paper.
 
     Parameters
     ----------
@@ -107,7 +91,7 @@ def algorithm_1(a, b):
     for i in range(1, M):
         c.append(np.inf)
 
-        while loop_done == False:
+        while loop_done is False:
             j = A[len(A) - 1]
 
             c[j] = (a[j - 1] - a[i + 1 - 1]) / (b[i + 1 - 1] - b[j - 1])
@@ -124,14 +108,7 @@ def algorithm_1(a, b):
 
 
 def KG_Alg(mu, S, lambda_):
-    """KG algorithm: single-threaded
-
-    Parameters
-
-    ----------
-    mu :
-    S :
-    lambda :
+    """KG algorithm: single-threaded.
 
     Returns
     ----------
@@ -182,19 +159,7 @@ def KG_Alg(mu, S, lambda_):
 
 
 def KG_iteration(mu, S, lambda_, x):
-    """Single KG iteration
-
-    Parameters
-    ----------
-    mu :
-    S :
-    lambda :
-
-    Returns
-    ----------
-    xx :
-    vv :
-    """
+    """Single KG iteration."""
     M = S.shape[0]
     a = list(mu)
     b = list(sigma(S, x, lambda_)[:, 0])
@@ -232,14 +197,7 @@ def KG_iteration(mu, S, lambda_, x):
 
 
 def KG_multi(mu, S, lambda_, pool):
-    """KG algorithm: parallelilized for large instances
-
-    Parameters
-    ----------
-    mu :
-    S :
-    lambda :
-    pool :
+    """KG algorithm: parallelilized for large instances.
 
     Returns
     ----------

@@ -1,3 +1,5 @@
+"""Generate covariance matrix."""
+
 import random
 
 import numpy as np
@@ -6,7 +8,7 @@ from nearest_correlation import nearcorr
 
 
 def generate_cov_mat(size):
-    """Generates a random size x size  correlation matrix
+    """Generates a random size x size  correlation matrix.
 
     Parameters
     ----------
@@ -18,7 +20,6 @@ def generate_cov_mat(size):
     A : numpy.ndarray
        Correlation matrix
     """
-
     P = np.zeros((size, size))
     for k in range(size):
         for i in range(size):

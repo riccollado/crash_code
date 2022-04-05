@@ -1,3 +1,5 @@
+"""Generate experiment networks."""
+
 import io
 import random
 from itertools import product
@@ -8,7 +10,7 @@ from numpy import floor
 
 
 def network_skeleton(num_nodes, num_layers):
-    """Generates edge list of network skeleton
+    """Generates edge list of network skeleton.
 
     Parameters
     ----------
@@ -22,7 +24,6 @@ def network_skeleton(num_nodes, num_layers):
     edges : list
        List of pairs of nodes comprising the skeleton edges
     """
-
     # Generate initial layer partition
     layer_partition = [0, num_nodes - 1, num_nodes - 2]
     layer_partition.extend(random.sample(range(1, num_nodes - 2), num_layers - 3))
@@ -71,7 +72,7 @@ def network_skeleton(num_nodes, num_layers):
 
 
 def generate_network(num_nodes, num_layers, density):
-    """Generates a connected network graph
+    """Generates a connected network graph.
 
     Parameters
     ----------

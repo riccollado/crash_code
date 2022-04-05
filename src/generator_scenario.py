@@ -1,3 +1,5 @@
+"""Generate experiment scenarios."""
+
 import numpy as np
 from numpy.random import multivariate_normal
 from scipy.stats import norm
@@ -6,7 +8,7 @@ from scipy.stats import norm
 def dynamic_scenarios(
     num_activities, num_scenarios, correlation_matrix, distribution_dict
 ):
-    """Generates samples based on activities and correlation matrix
+    """Generates samples based on activities and correlation matrix.
 
     Parameters
     ----------

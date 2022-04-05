@@ -1,3 +1,5 @@
+"""Generate PERT and geometric distributions."""
+
 import random
 
 import numpy as np
@@ -5,12 +7,10 @@ from scipy.stats import beta
 
 
 def generate_PERT(geom_prob):
-    """Generates beta distributions for activity times
+    """Generate beta distributions for activity times.
 
     Parameters
     ----------
-    project_network : networkx.classes.digraph.DiGraph
-       Network digraph
     geom_prob : dictionary
        Probabilities for Geometric distributions used to
        select the activities' Beta distributions
@@ -21,7 +21,6 @@ def generate_PERT(geom_prob):
        Dictionary with nodes as keys and values the corresponding
        beta distribution of activity times.
     """
-
     distributions = {}
 
     optimistic_duration = []
@@ -89,7 +88,9 @@ def generate_PERT(geom_prob):
 
 
 def generate_geometric(no_of_nodes):
-    """Generates probabilities for geometric distributions used to select the projects betas
+    """Generates probabilities for geometric distributions.
+
+    Used to select the projects betas.
 
     Parameters
     ----------
@@ -102,7 +103,6 @@ def generate_geometric(no_of_nodes):
        Dictionary with nodes as keys and values the corresponding
        geometric distribution probability.
     """
-
     geom_prob = {}
     for i in range(1, no_of_nodes + 1):
         value = random.uniform(0, 1)

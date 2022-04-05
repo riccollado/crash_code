@@ -1,3 +1,5 @@
+"""Database driver."""
+
 import json
 import os
 import pickle
@@ -20,7 +22,11 @@ from sqlalchemy.orm import relationship, sessionmaker
 
 
 def initialize_db():
+    """Initialize database.
 
+    Returns:
+        _type_: _description_
+    """
     # Database connection from envirionment variables
     connect_url = URL(
         "postgres",
@@ -132,6 +138,16 @@ def initialize_db():
     experiment_id = 0
 
     def push_experiment_db(seeds, attributes, run_time=0.0):
+        """Push experiment to database.
+
+        Args:
+            seeds (_type_): _description_
+            attributes (_type_): _description_
+            run_time (float, optional): _description_. Defaults to 0.0.
+
+        Returns:
+            _type_: _description_
+        """
         nonlocal experiment_id
 
         # Serialize the network
@@ -187,6 +203,15 @@ def initialize_db():
     def push_iteration_db(
         COV, partition_list, attributes, iteration_number, elapsed_iter_time
     ):
+        """Push individual iteration in database.
+
+        Args:
+            COV (_type_): _description_
+            partition_list (_type_): _description_
+            attributes (_type_): _description_
+            iteration_number (_type_): _description_
+            elapsed_iter_time (_type_): _description_
+        """
         iteration = Iteration(
             exp_id=experiment_id,
             cov=COV.to_json(compression="infer"),
@@ -210,12 +235,22 @@ def initialize_db():
         return
 
     def update_exp_time(new_time):
+        """Update experiment time.
+
+        Args:
+            new_time (_type_): _description_
+        """
         experiment = session.query(Experiment).get(experiment_id)
         experiment.exp_time = new_time
         session.commit()
         return
 
     def push_solution_db(solution):
+        """Push solution to database.
+
+        Args:
+            solution (_type_): _description_
+        """
         solution = Output(
             exp_id=experiment_id,
             e_sol=solution["E_solution"],

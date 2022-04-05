@@ -1,10 +1,13 @@
+"""Generate penalty methods."""
+
 from numpy import power
 
 from uncrashed_bounds import uncrashed_project_time
 
 
 def generate_penalty_vals_linear(t, m, b1):
-    """Generates penalty linear values
+    """Generates penalty linear values.
+
     Parameters
     ----------
     t : list
@@ -25,7 +28,8 @@ def generate_penalty_vals_linear(t, m, b1):
 
 
 def generate_penalty_vals_exponential(t, m, b1):
-    """Generates penalty exponential values
+    """Generates penalty exponential values.
+
     Parameters
     ----------
     t : list
@@ -46,13 +50,13 @@ def generate_penalty_vals_exponential(t, m, b1):
 
 
 def generate_penalty_bounds(network, PERT):
-    # Obtain t_init and t_final for calculation of objective
-    # penalty function. This is done by solving the main problem
-    # without crashing with most likely and pesimistic scenarios.
-    # In this way we approximate 'normal-time' and 'worst-time'
-    # it takes to perform the project. We use this to establish
-    # boundaries for the penalty function.
+    """Obtain t_init and t_final for calculation of objective penalty function.
+
+    This is done by solving the main problem without crashing with most likely
+    and pesimistic scenarios. In this way we approximate 'normal-time' and
+    'worst-time' it takes to perform the project. We use this to establish
+    boundaries for the penalty function.
+    """
     t_init, _ = uncrashed_project_time(network, PERT["most_likely"])
     t_final, _ = uncrashed_project_time(network, PERT["pessimistic"])
-
     return [t_init, t_final]

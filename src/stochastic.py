@@ -1,3 +1,5 @@
+"""Main stochastic optimization module."""
+
 import math
 import time
 from functools import partial
@@ -6,8 +8,6 @@ import bootstrapped.bootstrap as bs
 import bootstrapped.stats_functions as bs_stats
 import numpy as np
 import pandas as pd
-
-# import utilities
 import pygmo as pg
 from jellyfish import levenshtein_distance as l_dist
 from statsmodels.stats.correlation_tools import cov_nearest
@@ -21,25 +21,23 @@ COV = pd.DataFrame()
 
 
 def increment_lc():
+    """Increment leaf counter."""
     global KG_leaf_counter
     KG_leaf_counter += 1
     return KG_leaf_counter
 
 
 def initialize_attributes(problem, method):
-    """Initializes common attributes and parameters needed for SB&B algorithm
-
-    Parameters
-    ----------
-    ...
+    """Initializes common attributes and parameters needed for SB&B algorithm.
 
     Returns
     ----------
     attributes : dict
        Dictionary with keys:
           pool, project_network, scenarios, crashtime, crashcost, t_init, t_final,
-          outlocation, b, b2, alpha, experiment_id, conn, method, num_scenerios_per_estimation,
-          beta, pessimistic_duration, penalty_type, m, b1
+          outlocation, b, b2, alpha, experiment_id, conn, method,
+          num_scenerios_per_estimation, beta, pessimistic_duration, penalty_type,
+          m, b1
     """
     attributes = {}
 
@@ -107,15 +105,7 @@ def initialize_attributes(problem, method):
 
 
 def branch_bound_algorithm(attributes, push_iteration):
-    """Stochastic Branch & Bound implementation
-    Parameters
-    ----------
-    ...
-
-    Returns
-    ----------
-    N/A
-    """
+    """Stochastic Branch & Bound implementation."""
     global COV
 
     # Step 0: Scenario space initialization
@@ -245,10 +235,8 @@ def branch_bound_algorithm(attributes, push_iteration):
 def partition_record_set(
     attributes, partition_list, scenario_start_index, scenario_end_index
 ):
-    """Partition (split) record set and update bounds on new subproblems
-    Parameters
-    ----------
-    ...
+    """Partition (split) record set and update bounds on new subproblems.
+
     Return
     ----------
      just_partitioned : bool
@@ -261,7 +249,7 @@ def partition_record_set(
     for subproblem in partition_list:
 
         # Partition and update bounds if we have non-singleton record set
-        if subproblem["recordset"] == True and subproblem["singleton"] == False:
+        if subproblem["recordset"] is True and subproblem["singleton"] is False:
 
             # Get constraints List for subproblem
             constraints_dict = subproblem["constraints"]
@@ -381,7 +369,7 @@ def partition_record_set(
             return just_partitioned
 
         # Do not split if we have a singleton record set
-        elif subproblem["recordset"] == True and subproblem["singleton"] == True:
+        elif subproblem["recordset"] is True and subproblem["singleton"] is True:
             just_partitioned = False
             return just_partitioned
 
@@ -391,15 +379,7 @@ def partition_record_set(
 def work_on_subproblems(
     attributes, partition_list, scenario_start_index, scenario_end_index
 ):
-    """Obtains assigned scenarios per subproblem (possibly empty) and calls the bounding method
-    Parameters
-    ----------
-    ...
-
-    Returns
-    ----------
-    N/A
-    """
+    """Obtain assigned scenarios per subproblem and calls bounding method."""
     total_scenarios = attributes["scenarios"][scenario_start_index:scenario_end_index]
     assigned_scenarios = []
 
@@ -461,16 +441,16 @@ def work_on_subproblems(
 
 
 def estimate_bounds(attributes, subproblem, scenarios):
-    """Calls solver on a given subproblem for all scenarios and calculate E, Z_E and Z_std
-    Parameters. Also makes the individual subproblem E and STD updates under the KG method.
-    ----------
-    ...
+    """Call solver on a given subproblem for all scenarios.
+
+    Calculates E, Z_E and Z_std Parameters. Also makes the individual subproblem
+    E and STD updates under the KG method.
 
     Returns
     ----------
     E_obj_value : float
-       Approximation to expectation obtained from averaging the solution of subproblem over every scenario
-       either applying Boostrap or not
+       Approximation to expectation obtained from averaging the solution of
+        subproblem over every scenario either applying Boostrap or not.
     """
     global COV
 
@@ -483,7 +463,7 @@ def estimate_bounds(attributes, subproblem, scenarios):
     subproblem["sample_solutions"] += sample_solutions
 
     # Compute bootstrap statistics if required
-    if attributes["bootstrap"] == True:
+    if attributes["bootstrap"] is True:
         subproblem["Z_E"], subproblem["Z_std"] = bootstrap_E_STD(subproblem, attributes)
         # Update mean and std from boostrap
         subproblem["E"] = E_obj_value = subproblem["Z_E"]
@@ -508,7 +488,7 @@ def estimate_bounds(attributes, subproblem, scenarios):
         # First the sample statistics:
         subproblem["KG_sample_sol"].append(np.mean(sample_solutions))
         # Apply KG-bootstrap
-        if attributes["bootstrap"] == True:
+        if attributes["bootstrap"] is True:
             subproblem["KG_E"], subproblem["KG_std"] = bootstrap_KG(
                 subproblem, attributes, sample_solutions
             )
@@ -532,13 +512,13 @@ def estimate_bounds(attributes, subproblem, scenarios):
         M = COV.to_numpy()
         M[:, :] = S_n
 
-        # DEBUG
+        # ! DEBUG
         # M = M.astype(float)
         # if utilities.is_pos_def(M) != True:
-        ##print("Non positive definite matrix M")
+        # print("Non positive definite matrix M")
         # raise Exception("Non positive definite matrix M")
         # if utilities.is_pos_semi_def(M) != True:
-        ##print("Non positive semidefinite matrix M")
+        # print("Non positive semidefinite matrix M")
         # raise Exception("Non positive semidefinite matrix M")
 
         idx = sorted(list(attributes["KG_mu"].keys()))
@@ -549,16 +529,12 @@ def estimate_bounds(attributes, subproblem, scenarios):
 
 
 def multisolve_scenarios(attributes, subproblem, scenarios):
-    """Solves optimization problem for every scenario applied to the given subproblem
-    Parameters
-    ----------
-    ...
+    """Solves optimization problem for every scenario applied to the given subproblem.
 
     Returns
     ----------
     k : list
     """
-
     k = attributes["pool"].map(
         partial(
             optimize_subproblem,
@@ -577,7 +553,7 @@ def multisolve_scenarios(attributes, subproblem, scenarios):
         scenarios,
     )
 
-    # Debug single threaded code
+    # ! Debug single threaded code
     # k=[]
     # for scenario in scenarios:
     # k.append(optimize_subproblem(attributes['network'],
@@ -597,10 +573,7 @@ def multisolve_scenarios(attributes, subproblem, scenarios):
 
 
 def bootstrap_E_STD(subproblem, attributes):
-    """Evaluates a variance-reduction bootstrap method
-    Parameters
-    ----------
-    ...
+    """Evaluates a variance-reduction bootstrap method.
 
     Returns
     ----------
@@ -643,10 +616,7 @@ def bootstrap_E_STD(subproblem, attributes):
 
 
 def bootstrap_KG(subproblem, attributes, sample_solutions):
-    """Evaluates bootstrap for KG samples
-    Parameters
-    ----------
-    ...
+    """Evaluates bootstrap for KG samples.
 
     Returns
     ----------
@@ -690,15 +660,15 @@ def bootstrap_KG(subproblem, attributes, sample_solutions):
 
 
 def assign_scenarios(partition_list, total_scenarios, method):
-    """Computes and assigns scenarios to nodes of partition_list on Random, Random_1, and Distance methods
-    Parameters
-    ----------
-    ...
+    """Computes and assigns scenarios to nodes of partition_list.
+
+    This is done on Random, Random_1, and Distance methods.
 
     Return
     ----------
     assigned_scenarios_dict : dictionary
-       Dictionary with suproblem-index as key and value the assigned scenario to the subproblem.
+       Dictionary with suproblem-index as key and value the assigned
+        scenario to the subproblem.
     """
     elements = len(partition_list)
     scenarios_length = len(total_scenarios)
@@ -710,7 +680,7 @@ def assign_scenarios(partition_list, total_scenarios, method):
 
     elif method == "Random_1":
         # Assign all scenarios to a single randomly
-        # choosen subproblem of partition_list
+        # chosen subproblem of partition_list
         assigned_scenarios = np.array(
             [np.random.randint(0, len(partition_list))] * scenarios_length
         )
@@ -733,14 +703,13 @@ def assign_scenarios(partition_list, total_scenarios, method):
 
 
 def assign_scenarios_KG(partition_list, total_scenarios, attributes):
-    """Computes and assigns scenarios to nodes of partition_list on KG method Parameter
-    ----------
-    ...
+    """Compute and assign scenarios to nodes of partition_list on KG method Parameter.
 
     Return
     ----------
     assigned_scenarios_dict : dictionary
-       Dictionary with suproblem-index as key and value the assigned scenario to the subproblem.
+       Dictionary with suproblem-index as key and value
+        the assigned scenario to the subproblem.
     """
     global COV
 
@@ -757,7 +726,7 @@ def assign_scenarios_KG(partition_list, total_scenarios, attributes):
     # Convert solution to selected subproblem name
     selected_name = sorted(list(attributes["KG_mu"].keys()))[L[0]]
 
-    ## Assign all scenarios to the selected index
+    # Assign all scenarios to the selected index
     # assigned_scenarios = np.array([selected_name] * scenarios_length)
 
     # for i, subproblem in enumerate(partition_list):
@@ -778,16 +747,15 @@ def assign_scenarios_KG(partition_list, total_scenarios, attributes):
 
 
 def assign_scenarios_pareto(partition_list, total_scenarios, beta, method):
-    """Computes and assigns scenarios to nodes of partition_list on Pareto Inverse and Pareto_Boltzman methods
+    """Compute and assign scenarios to nodes of partition_list.
 
-    Parameters
-    ----------
-    ...
+    This is done on Pareto Inverse and Pareto_Boltzman methods.
 
     Return
     ----------
     assigned_scenarios_dict : dictionary
-       Dictionary with suproblem-index as key and value the assigned scenario to the subproblem.
+       Dictionary with suproblem-index as key and value
+        the assigned scenario to the subproblem.
     """
     elements = len(partition_list)
     scenarios_length = len(total_scenarios)
@@ -817,10 +785,7 @@ def assign_scenarios_pareto(partition_list, total_scenarios, beta, method):
 
 
 def rank_by_distance(partition_list):
-    """Ranks nodes in partition list by distance of its (Z_E, Z_std) point
-    Parameters
-    ----------
-    ...
+    """Ranks nodes in partition list by distance of its (Z_E, Z_std) point.
 
     Returns
     ----------
@@ -851,10 +816,7 @@ def rank_by_distance(partition_list):
 
 
 def pareto_fronts_probabilities(partition_list, beta, probability_method):
-    """Get non-dominated fronts and its probabilities
-    Parameters
-    ----------
-    ...
+    """Get non-dominated fronts and its probabilities.
 
     Returns
     ----------
@@ -863,9 +825,8 @@ def pareto_fronts_probabilities(partition_list, beta, probability_method):
     ndr : numpy.ndarray
        Non-domination ranks
     probability : dictionary
-       Dictionary with subproblem as keys and assigned probability values
+       Dictionary with subproblem as keys and assigned probability values.
     """
-
     # Get (-|Z_E|, -|Z_std|) points for all subproblems
     points = [
         [-(abs(subproblem["Z_E"])), -(abs(1 - abs(subproblem["Z_std"])))]
@@ -912,14 +873,16 @@ def pareto_fronts_probabilities(partition_list, beta, probability_method):
 
 
 def update_row_col(subproblem1, subproblem2, partition_list, attributes):
-    """Updates the last two rows and columns of COV with the exponential kernel values
-    of the string distances of the corresponding subproblem constraints and finds the
-    nearest covariance matrix
+    """Updates the last two rows and columns of COV.
+
+    The update is done with the exponential kernel values of the string
+    distances of the corresponding subproblem constraints and finds the
+    nearest covariance matrix.
     """
     global COV
 
-    sigma = attributes["KG_sigma"]
-    l = attributes["KG_l"]
+    kg_sigma = attributes["KG_sigma"]
+    kg_l = attributes["KG_l"]
     s1_const = subproblem1["constraints"]
     s2_const = subproblem2["constraints"]
 
@@ -947,15 +910,15 @@ def update_row_col(subproblem1, subproblem2, partition_list, attributes):
 
     # Calculate 1st column to fill
     dist1 = np.array([l_dist(s1_const_str, string) for string in const_str])
-    col1 = sigma**2 * np.exp(-np.square(dist1) / (2 * l**2))
-    # col1[len(col1)-2] += 2*l**2
-    # col1[len(col1)-2] += sigma**2 #positive-definite adjustment: max variance
+    col1 = kg_sigma**2 * np.exp(-np.square(dist1) / (2 * kg_l**2))
+    # col1[len(col1)-2] += 2*kg_l**2
+    # col1[len(col1)-2] += kg_sigma**2 #positive-definite adjustment: max variance
 
     # Calculate 1st column to fill
     dist2 = np.array([l_dist(s2_const_str, string) for string in const_str])
-    col2 = sigma**2 * np.exp(-np.square(dist2) / (2 * l**2))
-    # col2[len(col2)-1] += 2*l**2
-    # col2[len(col2)-1] += sigma**2 #positive-definite adjustment: max variance
+    col2 = kg_sigma**2 * np.exp(-np.square(dist2) / (2 * kg_l**2))
+    # col2[len(col2)-1] += 2*kg_l**2
+    # col2[len(col2)-1] += kg_sigma**2 #positive-definite adjustment: max variance
 
     # Update COV last two rows and columns
     M = COV.to_numpy()
@@ -971,12 +934,12 @@ def update_row_col(subproblem1, subproblem2, partition_list, attributes):
     S = COV.to_numpy()
     S[:, :] = M
 
-    # DEBUG
-    # if utilities.is_pos_def(M) != True:
-    ##print("Non positive definite matrix M")
+    # ! DEBUG
+    # if utilities.is_pos_def(M) is not True:
+    # print("Non positive definite matrix M")
     # raise Exception("Non positive definite matrix M")
-    # if utilities.is_pos_semi_def(M) != True:
-    ##print("Non positive semidefinite matrix M")
+    # if utilities.is_pos_semi_def(M) is not True:
+    # print("Non positive semidefinite matrix M")
     # raise Exception("Non positive semidefinite matrix M")
 
     return

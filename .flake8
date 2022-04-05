@@ -1,6 +1,6 @@
 [flake8]
 # McCabe complexity threshold
-max-complexity = 10
+max-complexity = 11
 
 # Ensure compatibility with black
 # https://black.readthedocs.io/en/stable/compatible_configs.html#flake8

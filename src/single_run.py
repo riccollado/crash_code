@@ -1,3 +1,5 @@
+"""Execute a single run of main method."""
+
 import multiprocessing as mp
 import os
 import platform

@@ -1,3 +1,5 @@
+"""Commit problem to db and B&B method."""
+
 import time
 
 import stochastic
@@ -5,20 +7,7 @@ from db_driver import initialize_db
 
 
 def optimize(problem, method, seeds=None):
-    """
-    Commits problem to db and the branch & bound method
-
-    Parameters
-    ----------
-    problem :
-
-    method :
-
-    Returns
-    ----------
-    N/A
-    """
-
+    """Commits problem to db and the branch & bound method."""
     # Initialize db and get db_driver methods
     (
         push_experiment,

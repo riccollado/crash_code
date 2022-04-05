@@ -1,8 +1,10 @@
+"""Uncrashed bounds method."""
+
 import gurobipy as gp
 
 
 def uncrashed_project_time(network, scenario):
-    """Solves the uncrashed unpenalized scheduling problem on a single scenario
+    """Solves the uncrashed unpenalized scheduling problem on a single scenario.
 
     Parameters
     ----------
@@ -18,7 +20,6 @@ def uncrashed_project_time(network, scenario):
     OptSol : list
        Optimal solution
     """
-
     no_of_nodes = network.number_of_nodes()
 
     # Setting up the optimization problem
