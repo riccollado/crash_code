@@ -1,0 +1,12 @@
+version: "3.7"
+services:
+  app:
+    build:
+      context: .
+    image: order_generator
+    container_name: order_generator
+    volumes:
+      - .:/home/root/app/.
+    ports:
+      - 80:8000
+    tty: true

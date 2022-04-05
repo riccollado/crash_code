@@ -1,0 +1,59 @@
+trigger:
+  - main
+  - dev
+
+resources:
+  - repo: self
+
+variables:
+  vmImageName: 'ubuntu-20.04'
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  DOCKER_BUILDKIT: 1
+
+
+stages:
+
+# - stage: Build
+#   displayName: Build container
+#   jobs:
+#     - job: build
+#       steps:
+#       - task: Bash@3
+#         displayName: ACR Login
+#         inputs:
+#           targetType: 'inline'
+#           # TODO sort out login credentials here
+#           script: 'az acr login --username flaschenpost --password $(ACR_PASS) --name flaschenpost'
+
+#     # FIXME this is just copy-pasted!!!
+#     - task: DockerCompose@0
+#       displayName: Build services
+#       inputs:
+#         azureContainerRegistry: 'Flaschenpost Container Registry'
+#         dockerComposeFile: 'docker-compose.yaml'
+#         action: 'Run a Docker Compose command'
+#         dockerComposeCommand: 'build api-prd'
+
+
+- stage: Test
+  displayName: Test code
+  jobs:
+    - job: test
+      steps:
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: 3.8
+        displayName: Install Python
+      - checkout: self
+        submodules: true
+      - script: |
+          python -m pip install -U pip
+          pip install poetry
+          poetry install
+        displayName: Install packages
+      - script: |
+          poetry run flake8 src/
+        displayName: Run lint tests with flake8
+      - script: |
+          poetry run pytest tests
+        displayName: Run unit tests with pytest

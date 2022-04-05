@@ -1,0 +1,24 @@
+
+# git folders
+**/.git
+.gitignore
+.gitmodules
+
+# python stuff
+.flake8
+.mypy_cache
+.pytest_cache
+.python-version
+
+# possible project data artifacts
+artifacts
+
+# Azure dev stuff
+azure-pipelines.yml
+
+# Notes
+notes
+tmp
+
+# Other
+.DS_Store

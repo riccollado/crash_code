@@ -1,0 +1,53 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.1.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-added-large-files
+
+  # - repo: https://github.com/asottile/seed-isort-config
+  #   rev: v2.1.1 # seed-isort-config version independent from isort
+  #   hooks:
+  #     - id: seed-isort-config
+
+  - repo: https://github.com/timothycrosley/isort
+    rev: 5.10.1
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+        additional_dependencies: [toml]
+
+  - repo: https://github.com/psf/black
+    rev: 22.3.0
+    hooks:
+      - id: black
+
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 4.0.1
+    hooks:
+      - id: flake8
+
+  -   repo: https://github.com/pre-commit/mirrors-mypy
+      rev: v0.942
+      hooks:
+      -   id: mypy
+
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.1.13
+    hooks:
+      - id: remove-crlf
+      - id: forbid-crlf
+
+  - repo: https://github.com/PyCQA/pydocstyle
+    rev: 6.1.1
+    hooks:
+      - id: pydocstyle
+        args:
+          [
+            --add-ignore=D200,
+            --add-ignore=D204,
+            --add-ignore=D401,
+            --add-select=D417,
+          ]

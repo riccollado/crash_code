@@ -1,0 +1,42 @@
+# ide
+.vscode
+
+# python
+__pycache__
+.mypy_cache
+*.pyc
+*.egg-info
+.pytest_cache
+/env
+/analysis
+/logs
+
+# artifacts and others
+artifacts/*
+notes/*
+tmp/*
+
+# Credentials
+credentials
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Secrets
+keys
+
+# Scripts
+# private_scripts/
+# jupyter_scripts/
+
+# Large document files and programming notes
+docs/
+notes/
+
+# poetry lock files to avoid issues with multiple machines
+poetry.lock
