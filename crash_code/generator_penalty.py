@@ -2,7 +2,7 @@
 
 from numpy import power
 
-from uncrashed_bounds import uncrashed_project_time
+from crash_code.uncrashed_bounds import uncrashed_project_time
 
 
 def generate_penalty_vals_linear(t, m, b1):

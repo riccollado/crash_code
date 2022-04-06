@@ -2,7 +2,7 @@
 
 import gurobipy as gp
 
-from generator_penalty import (
+from crash_code.generator_penalty import (
     generate_penalty_vals_exponential,
     generate_penalty_vals_linear,
 )

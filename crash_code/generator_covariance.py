@@ -4,7 +4,7 @@ import random
 
 import numpy as np
 
-from nearest_correlation import nearcorr
+from crash_code.nearest_correlation import nearcorr
 
 
 def generate_cov_mat(size):

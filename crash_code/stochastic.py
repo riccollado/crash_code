@@ -12,9 +12,9 @@ import pygmo as pg
 from jellyfish import levenshtein_distance as l_dist
 from statsmodels.stats.correlation_tools import cov_nearest
 
-from generator_scenario import dynamic_scenarios
-from generator_subproblem import optimize_subproblem
-from knowledge_gradient import KG_multi, update_mu_S
+from crash_code.generator_scenario import dynamic_scenarios
+from crash_code.generator_subproblem import optimize_subproblem
+from crash_code.knowledge_gradient import KG_multi, update_mu_S
 
 KG_leaf_counter = 0
 COV = pd.DataFrame()

@@ -44,6 +44,7 @@ The branching strategies are described below:
 <img src="https://latex.codecogs.com/gif.latex?p_i&space;=&space;\frac{\left(1/i\right)^\beta}{\sum_{k=1}^{n}\left(1/k\right)^\beta}" title="p_i = \frac{\left(1/i\right)^\beta}{\sum_{k=1}^{n}\left(1/k\right)^\beta}", />
 </p>
 
+<p>
 where <img src="https://latex.codecogs.com/gif.latex?\beta" title="\beta" /> is the Pareto front selection pressure, <img src="https://latex.codecogs.com/gif.latex?n" title="n" /> is the total number of fronts, <img src="https://latex.codecogs.com/gif.latex?s_i" title="s_i" /> is the total number of solutions in front of rank <img src="https://latex.codecogs.com/gif.latex?i" title="i" />, and <img src="https://latex.codecogs.com/gif.latex?\inline&space;\sum_{i=1}^n&space;s_ip_i&space;=&space;1" title="\sum_{i=1}^n s_ip_i = 1" />.
 
 6. **Pareto\_Boltzman**: Branching decision obtained by forming the Pareto frontier of mean-variance pairs of each leaf and performing non-dominated sorting based on inverse Boltzman probability:
@@ -79,33 +80,33 @@ Description of files
 
 Non-Python files:
 
-filename                          |  description
-----------------------------------|------------------------------------------------------------------------------------
-README.md                         |  Text file (markdown format) description of the project.
-DB/*.sql                          |  Postgres SQL files for database table creation
-Output/*.jpg                      |  Output images (network and statistics).
+| filename  | description                                             |
+| --------- | ------------------------------------------------------- |
+| README.md | Text file (markdown format) description of the project. |
+| sql/*.sql | Postgres SQL files for database table creation          |
+| output    | Output images (network and statistics).                 |
 
 Python scripts files:
 
-filename                          |  description
-----------------------------------|------------------------------------------------------------------------------------
-single_run.py                     |  Performs a single run of the method with specified parameters and randomly generated input data.
-multiple_run.py                   |  Performs a multiple runs of the methods with specified parameters and randomly generated input data.
+| filename        | description                                                                                          |
+| --------------- | ---------------------------------------------------------------------------------------------------- |
+| single_run.py   | Performs a single run of the method with specified parameters and randomly generated input data.     |
+| multiple_run.py | Performs a multiple runs of the methods with specified parameters and randomly generated input data. |
 
 Python modules:
 
-filename                          |  description
-----------------------------------|------------------------------------------------------------------------------------
-generator_covariance.py           |  Generates covariance matrices for the activity times.
-generator_crash.py                |  Generates activity crash times and costs.
-generator_distribution.py         |  Generates PERT distributions for activity times.
-generator_network.py              |  Generates connected project network graphs.
-generator_penalty.py              |  Generates penalty linear and exponential values for the optimization problem.
-generator_scenario.py             |  Generates random samples based on activity times PERT and correlation matrix.
-generator_subproblem.py           |  Defines and solve with Gurobi an intermediate optimization problem with some fixed variables.
-knowledge_gradient.py             |  Implements the Knowledge-Gradient algorithm with correlated beliefs.
-nearest_correlation.py            |  Nick Higham's nearest correlation algorithm. Python implementation by Mike Croucher found [here](https://github.com/mikecroucher/nearest_correlation "Mike Croucher").
-optimize.py                       |  Commits problem to DB and calls the branch & bound method.
-stochastic.py                     |  Main file containing the branch & bound method and all supporting functions and methods. Includes methods to perform bootstrap and Pareto-based branching decision.
-uncrashed_bounds.py               |  Solves the un-crashed and un-penalized scheduling problem on a single scenario to obtain bounds on costs and time.
-utilities.py                      |  Numerical utility functions.
+| filename                  | description                                                                                                                                                            |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| generator_covariance.py   | Generates covariance matrices for the activity times.                                                                                                                  |
+| generator_crash.py        | Generates activity crash times and costs.                                                                                                                              |
+| generator_distribution.py | Generates PERT distributions for activity times.                                                                                                                       |
+| generator_network.py      | Generates connected project network graphs.                                                                                                                            |
+| generator_penalty.py      | Generates penalty linear and exponential values for the optimization problem.                                                                                          |
+| generator_scenario.py     | Generates random samples based on activity times PERT and correlation matrix.                                                                                          |
+| generator_subproblem.py   | Defines and solve with Gurobi an intermediate optimization problem with some fixed variables.                                                                          |
+| knowledge_gradient.py     | Implements the Knowledge-Gradient algorithm with correlated beliefs.                                                                                                   |
+| nearest_correlation.py    | Nick Higham's nearest correlation algorithm. Python implementation by Mike Croucher found [here](https://github.com/mikecroucher/nearest_correlation "Mike Croucher"). |
+| optimize.py               | Commits problem to DB and calls the branch & bound method.                                                                                                             |
+| stochastic.py             | Main file containing the branch & bound method and all supporting functions and methods. Includes methods to perform bootstrap and Pareto-based branching decision.    |
+| uncrashed_bounds.py       | Solves the un-crashed and un-penalized scheduling problem on a single scenario to obtain bounds on costs and time.                                                     |
+| utilities.py              | Numerical utility functions.                                                                                                                                           |

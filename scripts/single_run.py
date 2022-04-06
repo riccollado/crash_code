@@ -8,12 +8,12 @@ import random
 import numpy as np
 from pyfiglet import Figlet
 
-from generator_covariance import generate_cov_mat
-from generator_crash import generate_crash_cost, generate_crash_times
-from generator_distribution import generate_geometric, generate_PERT
-from generator_network import generate_network
-from generator_penalty import generate_penalty_bounds
-from optimize import optimize
+from crash_code.generator_covariance import generate_cov_mat
+from crash_code.generator_crash import generate_crash_cost, generate_crash_times
+from crash_code.generator_distribution import generate_geometric, generate_PERT
+from crash_code.generator_network import generate_network
+from crash_code.generator_penalty import generate_penalty_bounds
+from crash_code.optimize import optimize
 
 if __name__ == "__main__":
 

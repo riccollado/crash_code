@@ -3,7 +3,7 @@
 import time
 
 import stochastic
-from db_driver import initialize_db
+from crash_code.db_driver import initialize_db
 
 
 def optimize(problem, method, seeds=None):
