@@ -2,8 +2,8 @@
 
 import time
 
-import stochastic
 from crash_code.db_driver import initialize_db
+from crash_code.stochastic import branch_bound_algorithm, initialize_attributes
 
 
 def optimize(problem, method, seeds=None):
@@ -18,12 +18,12 @@ def optimize(problem, method, seeds=None):
     ) = initialize_db()
 
     # Initialize attributes & push experimnt to db
-    attributes = stochastic.initialize_attributes(problem, method)
+    attributes = initialize_attributes(problem, method)
     experiment_id = push_experiment(seeds, attributes)
 
     # Run SB&B algorithm
     start_time = time.clock()
-    solution = stochastic.branch_bound_algorithm(attributes, push_iteration)
+    solution = branch_bound_algorithm(attributes, push_iteration)
     elapsed_time = time.clock() - start_time
     update_exp_time(elapsed_time)
 

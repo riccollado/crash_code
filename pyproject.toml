@@ -3,7 +3,7 @@ authors = ["Ricardo A. Collado"]
 description = "Code for crashing optimization"
 name = "crash_code"
 packages = [{include = "crash_code"}]
-version = "0.1.0"
+version = "1.0.0"
 
 [tool.poetry.dependencies]
 SQLAlchemy = "^1.4.34"
@@ -17,7 +17,8 @@ numpy = "^1.22.3"
 pandas = "^1.4.2"
 pydot = "^1.4.2"
 pyfiglet = "^0.8.post1"
-python = ">=3.9,<3.11"
+pygmo = "^2.16.1"
+python = ">=3.8,<3.9"
 scipy = "^1.8.0"
 statsmodels = "^0.13.2"
 
