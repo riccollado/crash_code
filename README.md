@@ -41,19 +41,19 @@ The branching strategies are described below:
  5. **Pareto\_Inverse**: Branching decision obtained by forming the Pareto frontier of mean-variance pairs of each leaf and performing non-dominated sorting based on inverse proportional probability:
 
 <p>
-<img src="https://latex.codecogs.com/gif.latex?p_i&space;=&space;\frac{\left(1/i\right)^\beta}{\sum_{k=1}^{n}\left(1/k\right)^\beta}" title="p_i = \frac{\left(1/i\right)^\beta}{\sum_{k=1}^{n}\left(1/k\right)^\beta}", />
+<img src="https://latex.codecogs.com/svg.image?\mathbf{p_i&space;=&space;\frac{\left(1/i\right)^\beta}{\sum_{k=1}^{n}\left(1/k\right)^\beta}}" title="p_i = \frac{\left(1/i\right)^\beta}{\sum_{k=1}^{n}\left(1/k\right)^\beta}", />
 </p>
 
 <p>
-where <img src="https://latex.codecogs.com/gif.latex?\beta" title="\beta" /> is the Pareto front selection pressure, <img src="https://latex.codecogs.com/gif.latex?n" title="n" /> is the total number of fronts, <img src="https://latex.codecogs.com/gif.latex?s_i" title="s_i" /> is the total number of solutions in front of rank <img src="https://latex.codecogs.com/gif.latex?i" title="i" />, and <img src="https://latex.codecogs.com/gif.latex?\inline&space;\sum_{i=1}^n&space;s_ip_i&space;=&space;1" title="\sum_{i=1}^n s_ip_i = 1" />.
+where <img src="https://latex.codecogs.com/svg.image?\mathbf{\beta}" title="\beta" /> is the Pareto front selection pressure, <img src="https://latex.codecogs.com/svg.image?\mathbf{n}" title="n" /> is the total number of fronts, <img src="https://latex.codecogs.com/svg.image?\mathbf{s_i}" title="s_i" /> is the total number of solutions in front of rank <img src="https://latex.codecogs.com/svg.image?\mathbf{i}" title="i" />, and <img src="https://latex.codecogs.com/svg.image?\inline&space;\mathbf{&space;\sum_{i=1}^n&space;s_ip_i&space;=&space;1&space;}" title="\sum_{i=1}^n s_ip_i = 1" />.
 
 6. **Pareto\_Boltzman**: Branching decision obtained by forming the Pareto frontier of mean-variance pairs of each leaf and performing non-dominated sorting based on inverse Boltzman probability:
 
 <p>
-<img src="https://latex.codecogs.com/gif.latex?p_i&space;=&space;\frac{e^{-\beta&space;i}}{\sum_{k=1}^n&space;s_k&space;e^{-\beta&space;k}}" title="p_i = \frac{e^{-\beta i}}{\sum_{k=1}^n s_k e^{-\beta k}}", />
+<img src="https://latex.codecogs.com/svg.image?\mathbf{&space;&space;p_i&space;=&space;\frac{e^{-\beta&space;i}}{\sum_{k=1}^n&space;s_k&space;e^{-\beta&space;k}}&space;&space;&space;}" title="p_i = \frac{e^{-\beta i}}{\sum_{k=1}^n s_k e^{-\beta k}}", />
 </p>
 
-where <img src="https://latex.codecogs.com/gif.latex?\beta" title="\beta" /> is the Pareto front selection pressure, <img src="https://latex.codecogs.com/gif.latex?n" title="n" /> is the total number of fronts, <img src="https://latex.codecogs.com/gif.latex?s_i" title="s_i" /> is the total number of solutions in front of rank <img src="https://latex.codecogs.com/gif.latex?i" title="i" />, and <img src="https://latex.codecogs.com/gif.latex?\inline&space;\sum_{i=1}^n&space;s_ip_i&space;=&space;1" title="\sum_{i=1}^n s_ip_i = 1" />.
+where <img src="https://latex.codecogs.com/svg.image?\mathbf{\beta}" title="\beta" /> is the Pareto front selection pressure, <img src="https://latex.codecogs.com/svg.image?\mathbf{n}" title="n" /> is the total number of fronts, <img src="https://latex.codecogs.com/svg.image?\mathbf{s_i}" title="s_i" /> is the total number of solutions in front of rank <img src="https://latex.codecogs.com/svg.image?\mathbf{i}" title="i" />, and <img src="https://latex.codecogs.com/svg.image?\inline\mathbf{&space;&space;\sum_{i=1}^n&space;s_ip_i&space;=&space;1&space;&space;&space;}" title="\sum_{i=1}^n s_ip_i = 1" />.
 
 The application also stores every solution and iteration in a SQL database for later retrieval and statistical analysis.
 
