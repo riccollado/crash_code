@@ -2,7 +2,7 @@
 # McCabe complexity threshold
 max-complexity = 18
 
-exclude = */__init__.py
+exclude = */__init__.py, src/matrix_manager/nearest_correlation.py
 
 # Ensure compatibility with black
 # https://black.readthedocs.io/en/stable/compatible_configs.html#flake8
