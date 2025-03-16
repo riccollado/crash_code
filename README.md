@@ -4,7 +4,9 @@ Learning to Crash
 A Reinforcement Learning Approach to Project Scheduling
 -------------------------------------------------------
 
-This repository contains a CLI tool to implement a stochastic branch & bound optimization method for the problem of crashing a project activity network subject to uncertain activity times and threshold penalties.
+This repository contains a CLI tool to implement a stochastic branch & bound
+optimization method for the problem of crashing a project activity network subject to
+uncertain activity times and threshold penalties.
 
 Overview
 --------
@@ -16,17 +18,20 @@ The problem requires the following input data:
 
 1. A project network graph in the GraphML format (supplied as an XML file).
 
-2. Lists of pessimistic, most likely, and optimistic, values to describing the PERT activity time distributions.
+2. Lists of pessimistic, most likely, and optimistic, values to describing the PERT
+   activity time distributions.
 
 3. A covariance matrix describing the linear relationships among activity times.
 
 4. Threshold values describing penalties due to time overrun.
 
-5. A selection of branching decision method to apply from: "KG", "Random", "Uniform", "Distance", "Pareto\_Inverse", and "Pareto\_Boltzman".
+5. A selection of branching decision method to apply from: "KG", "Random", "Uniform",
+   "Distance", "Pareto\_Inverse", and "Pareto\_Boltzman".
 
 6. Number of samples that the user wants to consider.
 
-The output of the CLI is an XML file with the solution obtained after applying the stochastic branch & bound method with the selected branching decision.
+The output of the CLI is an XML file with the solution obtained after applying the
+stochastic branch & bound method with the selected branching decision.
 
 The branching strategies are described below:
 
@@ -34,11 +39,14 @@ The branching strategies are described below:
 
  2. **Random**: Random branching selection as discussed [here](https://pubsonline.informs.org/doi/pdf/10.1287/ijoc.12.2.125.11894?casa_token=PHCfqHAG120AAAAA:BsTfR2bDQEtx3tlkzJKbYcMAoSdDEcr65TkYU49hMCOUfULXn32p-9Li6bhKLWL-UpttA4DecBhA "A Stochastic Branch-and-Bound Approach to ActivityCrashing in Project Management").
 
- 3. **Uniform**: Branching decision rule based on sampling on every available B&B leaf at every main iteration step.
+ 3. **Uniform**: Branching decision rule based on sampling on every available B&B leaf
+    at every main iteration step.
 
  4. **Distance**: Branching decision obtained by forming the Pareto frontier of mean-variance pairs of each leaf and performing non-dominated sorting based on vector distance. The non-dominated sorting method is discussed [here](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=996017&casa_token=RX5FX8Ctu38AAAAA:BymQiux3DQammBgBVQANxxHhwDx5fhxT3FqRNB8nCvyND4WSajGqwvjyKNpISKO5aJj2akki&tag=1 "A Fast and Elitist Multiobjective Genetic Algorithm:").
 
- 5. **Pareto\_Inverse**: Branching decision obtained by forming the Pareto frontier of mean-variance pairs of each leaf and performing non-dominated sorting based on inverse proportional probability:
+ 5. **Pareto\_Inverse**: Branching decision obtained by forming the Pareto frontier of
+    mean-variance pairs of each leaf and performing non-dominated sorting based on
+    inverse proportional probability:
 
 <p>
 <img src="https://latex.codecogs.com/svg.image?\mathbf{p_i&space;=&space;\frac{\left(1/i\right)^\beta}{\sum_{k=1}^{n}\left(1/k\right)^\beta}}" title="p_i = \frac{\left(1/i\right)^\beta}{\sum_{k=1}^{n}\left(1/k\right)^\beta}", />
@@ -47,7 +55,9 @@ The branching strategies are described below:
 <p>
 where <img src="https://latex.codecogs.com/svg.image?\mathbf{\beta}" title="\beta" /> is the Pareto front selection pressure, <img src="https://latex.codecogs.com/svg.image?\mathbf{n}" title="n" /> is the total number of fronts, <img src="https://latex.codecogs.com/svg.image?\mathbf{s_i}" title="s_i" /> is the total number of solutions in front of rank <img src="https://latex.codecogs.com/svg.image?\mathbf{i}" title="i" />, and <img src="https://latex.codecogs.com/svg.image?\inline&space;\mathbf{&space;\sum_{i=1}^n&space;s_ip_i&space;=&space;1&space;}" title="\sum_{i=1}^n s_ip_i = 1" />.
 
-6. **Pareto\_Boltzman**: Branching decision obtained by forming the Pareto frontier of mean-variance pairs of each leaf and performing non-dominated sorting based on inverse Boltzman probability:
+6. **Pareto\_Boltzman**: Branching decision obtained by forming the Pareto frontier of
+   mean-variance pairs of each leaf and performing non-dominated sorting based on
+   inverse Boltzman probability:
 
 <p>
 <img src="https://latex.codecogs.com/svg.image?\mathbf{&space;&space;p_i&space;=&space;\frac{e^{-\beta&space;i}}{\sum_{k=1}^n&space;s_k&space;e^{-\beta&space;k}}&space;&space;&space;}" title="p_i = \frac{e^{-\beta i}}{\sum_{k=1}^n s_k e^{-\beta k}}", />
@@ -55,7 +65,8 @@ where <img src="https://latex.codecogs.com/svg.image?\mathbf{\beta}" title="\bet
 
 where <img src="https://latex.codecogs.com/svg.image?\mathbf{\beta}" title="\beta" /> is the Pareto front selection pressure, <img src="https://latex.codecogs.com/svg.image?\mathbf{n}" title="n" /> is the total number of fronts, <img src="https://latex.codecogs.com/svg.image?\mathbf{s_i}" title="s_i" /> is the total number of solutions in front of rank <img src="https://latex.codecogs.com/svg.image?\mathbf{i}" title="i" />, and <img src="https://latex.codecogs.com/svg.image?\inline\mathbf{&space;&space;\sum_{i=1}^n&space;s_ip_i&space;=&space;1&space;&space;&space;}" title="\sum_{i=1}^n s_ip_i = 1" />.
 
-The application also stores every solution and iteration in a SQL database for later retrieval and statistical analysis.
+The application also stores every solution and iteration in a SQL database for later
+retrieval and statistical analysis.
 
 Dependencies
 ------------
