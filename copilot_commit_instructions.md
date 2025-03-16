@@ -9,5 +9,6 @@ For example:
 1. **myfile.py**: Added a new function that does something.
 2. **myfile2.py**: Removed a function that was not needed.
 
-Make sure that only git-staged files are included in the changes list. Also, make sure
-that each staged file is included in the list of changes.
+Make sure that only "staged" files are included in the changes list. Also, make sure
+that each staged file is included in the list of changes at least once and that each
+main change is listed exactly once.
