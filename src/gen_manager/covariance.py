@@ -1,6 +1,6 @@
 """Generate covariance matrix."""
 
-import random
+import secrets
 
 import numpy as np
 
@@ -26,7 +26,7 @@ def generate_cov_mat(size: int) -> np.ndarray:
             if k == i:
                 rand_mat[k][i] = 1
             elif k < i:
-                rand_mat[k][i] = random.uniform(-1, 1)
+                rand_mat[k][i] = secrets.SystemRandom().uniform(-1, 1)
             else:
                 rand_mat[k][i] = rand_mat[i][k]
     corr_mat = nearcorr(

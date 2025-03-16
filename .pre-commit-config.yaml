@@ -62,11 +62,11 @@ repos:
     hooks:
       - id: mypy
 
-  # # Strip all output from jupyter notebook cells
-  # - repo: https://github.com/kynan/nbstripout
-  #   rev: 0.8.1
-  #   hooks:
-  #     - id: nbstripout
+  # Strip all output from jupyter notebook cells
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.8.1
+    hooks:
+      - id: nbstripout
 
   # Run nbqa pre-commit hooks for jupyter notebooks
   - repo: https://github.com/nbQA-dev/nbQA
