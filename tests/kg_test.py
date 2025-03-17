@@ -20,7 +20,7 @@ import numpy as np
 from scipy.stats import random_correlation
 
 from matrix_manager.nearest_correlation import nearcorr
-from opt_manager.knowledge_gradient import KG_Alg, KG_multi, update_mu_S
+from opt_manager.knowledge_gradient import kg_alg, kg_multi, update_mu_s
 
 if __name__ == "__main__":
     processes = mp.cpu_count()
@@ -51,13 +51,13 @@ if __name__ == "__main__":
 
     mu = np.array([0.2, 0.21, 0.92, 0.11, 0.7, 0.2, -0.1])
 
-    print(KG_Alg(mu, S, lambda_values))
+    print(kg_alg(mu, S, lambda_values))
 
-    print(KG_multi(mu, S, lambda_values, pool))
+    print(kg_multi(mu, S, lambda_values, pool))
 
     Y = 0.22
     X = 3
-    updated_mu, updated_S = update_mu_S(mu, S, lambda_values, X, Y)
+    updated_mu, updated_S = update_mu_s(mu, S, lambda_values, X, Y)
     print(updated_mu.shape)
     print(updated_mu)
 
