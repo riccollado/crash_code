@@ -11,4 +11,4 @@ For example:
 
 Make sure that only "staged" files are included in the changes list. Also, make sure
 that each staged file is included in the list of changes at least once and that each
-main change is listed exactly once.
+committed change is listed exactly once.
