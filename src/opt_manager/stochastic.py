@@ -637,7 +637,7 @@ def multisolve_scenarios(
         scenarios,
     )
 
-    # ! Debug single threaded code
+    # ! DEBUG SINGLE THREADED CODE
     # k=[]
     # for scenario in scenarios:
     #     k.append(optimize_subproblem(attributes['network'],
