@@ -148,7 +148,7 @@ def algorithm_1(
     return c, A
 
 
-def KG_Alg(
+def kg_alg(
     mu: np.ndarray,
     S: np.ndarray,
     lambda_: np.ndarray,
@@ -212,7 +212,7 @@ def KG_Alg(
     return xx - 1, vv
 
 
-def KG_iteration(
+def kg_iteration(
     mu: np.ndarray,
     S: np.ndarray,
     lambda_: np.ndarray,
@@ -272,7 +272,7 @@ def KG_iteration(
     return x - 1, v
 
 
-def KG_multi(mu, S, lambda_, pool):
+def kg_multi(mu, S, lambda_, pool):
     """KG algorithm: parallelized for large instances.
 
     Parameters
@@ -296,7 +296,7 @@ def KG_multi(mu, S, lambda_, pool):
     if M >= 10:
         L = pool.map(
             partial(
-                KG_iteration,
+                kg_iteration,
                 mu,
                 S,
                 lambda_,
@@ -307,7 +307,7 @@ def KG_multi(mu, S, lambda_, pool):
     else:
         L = []
         for x in range(1, M):
-            L.append(KG_iteration(mu, S, lambda_, x))
+            L.append(kg_iteration(mu, S, lambda_, x))
 
     L.sort(key=lambda pair: pair[1], reverse=True)
 
