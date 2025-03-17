@@ -17,8 +17,14 @@ from numpy.linalg import norm
 class ExceededMaxIterationsError(Exception):
     """Error class for exceeding iterations."""
 
-    def __init__(self, msg, matrix=[], iteration=[], ds=[]):
+    def __init__(self, msg, matrix=None, iteration=None, ds=None):
         """Initialize instance."""
+        if matrix is None:
+            matrix = []
+        if iteration is None:
+            iteration = []
+        if ds is None:
+            ds = []
         self.msg = msg
         self.matrix = matrix
         self.iteration = iteration
@@ -31,7 +37,7 @@ class ExceededMaxIterationsError(Exception):
 
 def nearcorr(
     symmetric_input_matrix,
-    tol=[],
+    tol=None,
     flag=0,
     max_iterations=100,
     weights=None,
@@ -64,6 +70,8 @@ def nearcorr(
     exceeds max_iterations except_on_too_many_iterations = False to silently return the
     best result found after max_iterations number of iterations
     """
+    if tol is None:
+        tol = []
     # If input is an ExceededMaxIterationsError object this
     # is a restart computation
     if isinstance(symmetric_input_matrix, ExceededMaxIterationsError):

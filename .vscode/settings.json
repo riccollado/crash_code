@@ -3,8 +3,13 @@
         "Boltzman",
         "BYTEA",
         "distn",
+        "eigh",
+        "EIGS",
         "pyfiglet",
         "pygmo",
-        "uncrashed"
+        "uncrashed",
+        "Whalf",
+        "Xold",
+        "Yold"
     ]
 }
