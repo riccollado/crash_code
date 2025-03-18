@@ -39,6 +39,7 @@ pyomo = "^6.9.1"
 glpk = "^0.4.8"
 highspy = "^1.9.0"
 pulp = "^3.0.2"
+amplpy = "^0.14.0"
 # Installed manually from source in
 # ~/.cache/pypoetry/virtualenvs/crash-code-CmLu5m00-py3.12/lib/python3.12/site-packages/
 # see also ~/github-repos/pygmo2/build/install_log.txt and chatgpt project on the
