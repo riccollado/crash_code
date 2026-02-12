@@ -289,10 +289,8 @@ def partition_record_set(
     just_partitioned = False
 
     for subproblem in partition_list:
-
         # Partition and update bounds if we have non-singleton record set
         if subproblem["recordset"] is True and subproblem["singleton"] is False:
-
             # Get constraints List for subproblem
             constraints_dict = subproblem["constraints"]
             index_of_last_constraint = len(constraints_dict) - 1
@@ -397,8 +395,7 @@ def partition_record_set(
                 attributes,
                 subproblem2,
                 attributes["scenarios"][
-                    scenario_start_index
-                    + scen_est_num : scenario_start_index
+                    scenario_start_index + scen_est_num : scenario_start_index
                     + 2 * scen_est_num
                 ],
             )

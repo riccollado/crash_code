@@ -17,7 +17,6 @@ from gen_manager.penalty import generate_penalty_bounds
 from opt_manager.optimize import optimize
 
 if __name__ == "__main__":
-
     processes = mp.cpu_count()
     pool = mp.Pool(int(processes * 3 / 4))
 

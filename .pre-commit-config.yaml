@@ -1,7 +1,7 @@
 repos:
   # Run rudimentary checks.
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-yaml
       - id: end-of-file-fixer
@@ -11,14 +11,14 @@ repos:
 
   # Remove and forbid line break control characters.
   - repo: https://github.com/Lucas-C/pre-commit-hooks
-    rev: v1.5.5
+    rev: v1.5.6
     hooks:
       - id: remove-crlf
       - id: forbid-crlf
 
   # Ruff replaces Black, isort, flake8, autoflake, pydocstyle
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.11.13
+    rev: v0.15.0
     hooks:
       - id: ruff
         args: [--fix]
@@ -26,13 +26,13 @@ repos:
 
   # Check python types with MyPy
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.16.0
+    rev: v1.19.1
     hooks:
       - id: mypy
 
   # Strip all output from jupyter notebook cells
   - repo: https://github.com/kynan/nbstripout
-    rev: 0.8.1
+    rev: 0.9.0
     hooks:
       - id: nbstripout
 
@@ -53,7 +53,7 @@ repos:
 
   # Security linter for Python code
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.8.3
+    rev: 1.9.3
     hooks:
       - id: bandit
         args: ["--skip=B101,B301,B403,B605,B607"]
