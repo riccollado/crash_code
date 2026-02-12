@@ -1,13 +1,16 @@
 """Generate experiment networks."""
 
 import io
-import random
+import secrets
 from itertools import product
 from typing import Dict, List, Tuple
 
 import matplotlib.pyplot as plt
 import networkx as nx
 from numpy import floor
+
+
+SECURE_RANDOM = secrets.SystemRandom()
 
 
 def network_skeleton(
@@ -30,7 +33,9 @@ def network_skeleton(
     """
     # Generate initial layer partition
     layer_partition = [0, num_nodes - 1, num_nodes - 2]
-    layer_partition.extend(random.sample(range(1, num_nodes - 2), num_layers - 3))
+    layer_partition.extend(
+        SECURE_RANDOM.sample(range(1, num_nodes - 2), num_layers - 3)
+    )
     layer_partition.sort()
 
     # Populate layers
@@ -46,14 +51,14 @@ def network_skeleton(
         a_layer = layers[i]
         b_layer = layers[i + 1]
 
-        random.shuffle(a_layer)
-        random.shuffle(b_layer)
+        SECURE_RANDOM.shuffle(a_layer)
+        SECURE_RANDOM.shuffle(b_layer)
 
         # We have two cases depending on which layer is larger
         if len(a_layer) <= len(b_layer):
             a_layer_list = [[a] for a in a_layer]
             index = [0, len(b_layer)]
-            index.extend(random.sample(range(1, len(b_layer)), len(a_layer) - 1))
+            index.extend(SECURE_RANDOM.sample(range(1, len(b_layer)), len(a_layer) - 1))
             index.sort()
             b_layer_list = [
                 b_layer[index[i] : index[i + 1]] for i in range(len(index) - 1)
@@ -66,7 +71,7 @@ def network_skeleton(
         else:
             b_layer_list = [[b] for b in b_layer]
             index = [0, len(a_layer)]
-            index.extend(random.sample(range(1, len(a_layer)), len(b_layer) - 1))
+            index.extend(SECURE_RANDOM.sample(range(1, len(a_layer)), len(b_layer) - 1))
             index.sort()
             a_layer_list = [
                 a_layer[index[i] : index[i + 1]] for i in range(len(index) - 1)
@@ -148,7 +153,7 @@ def generate_network(
     )
 
     # Add new edges
-    network_graph.add_edges_from(random.sample(pairs, n))
+    network_graph.add_edges_from(SECURE_RANDOM.sample(pairs, n))
 
     # Plot figure to io stream and store binary values
     figure = io.BytesIO()

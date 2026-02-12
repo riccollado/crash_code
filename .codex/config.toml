@@ -1,0 +1,27 @@
+# Project-local Codex configuration for crash_code.
+# Reference: OpenAI Codex config basics/reference/sample docs.
+
+model = "gpt-5.2-codex"
+model_provider = "openai"
+model_reasoning_effort = "high"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+# Fall back to these instruction files when AGENTS.md is not present.
+project_doc_fallback_filenames = ["CODEX.md", "CLAUDE.md"]
+
+[tools]
+# Enable built-in web-search requests for research/debug tasks.
+web_search_request = true
+
+[history]
+# Keep local conversation history for continuity across sessions.
+persistence = "save-all"
+
+[profiles.quick]
+model_reasoning_effort = "minimal"
+approval_policy = "on-failure"
+
+[profiles.thorough]
+model_reasoning_effort = "high"
+approval_policy = "on-request"

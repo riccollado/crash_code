@@ -1,6 +1,6 @@
 """Uncrashed bounds method with Pyomo."""
 
-from typing import List, Tuple
+from typing import Any, List, Tuple
 
 import networkx as nx
 import pyomo.environ as pyo
@@ -47,7 +47,27 @@ def uncrashed_project_time(
     model.s = pyo.Var(nodes, domain=pyo.NonNegativeIntegers)
 
     # Network flow model constraints
-    def network_constraints_rule(model, node, succ):
+    def network_constraints_rule(
+        model: pyo.ConcreteModel,
+        node: int,
+        succ: int,
+    ) -> Any:
+        """Build one precedence constraint for a single network arc.
+
+        Parameters
+        ----------
+        model : pyomo.environ.ConcreteModel
+            Current optimization model.
+        node : int
+            Upstream node index.
+        succ : int
+            Successor node index.
+
+        Returns
+        -------
+        Any
+            Pyomo relational expression enforcing precedence.
+        """
         return model.s[succ] >= model.s[node] + scenario[node]
 
     model.network_constraints = pyo.Constraint(

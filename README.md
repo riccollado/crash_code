@@ -71,57 +71,86 @@ retrieval and statistical analysis.
 Dependencies
 ------------
 
-- Python 3.8.12
-- SQLAlchemy 1.4.34
-- Bootstrapped 0.0.2
-- Graphviz 0.19.1
-- Gurobipy 9.5.1
-- Jellyfish 0.9.0
-- Matplotlib 3.5.1
-- Networkx 2.7.1
-- Numpy 1.22.3
-- Pandas 1.4.2
-- Pydot 1.4.2
-- Pyfiglet 0.8.pos
-- Pygmo 2.16.1
-- Scipy 1.8.0
-- Statsmodels 0.13.2
+This is a `uv`-managed project. Python and packages are resolved from
+`pyproject.toml` (`requires-python = ">=3.12,<3.13"`).
 
-Description of files
+Setup and run (`uv`)
 --------------------
 
-Non-Python files:
+```bash
+# Install uv first: https://docs.astral.sh/uv/
+uv python install 3.12
+uv sync
+uv run python -m run_manager.single_run
+```
 
-| filename                        | description                                             |
-| ------------------------------- | ------------------------------------------------------- |
-| README.md                       | Text file (markdown format) description of the project. |
-| sql/*.sql                       | Postgres SQL files for database table creation.         |
-| output/*.png                    | Output images (network and statistics).                 |
-| presentation/crash_learning.pdf | Code and results elevator pitch presentation.           |
+Main packages
+-------------
 
-Python and Jupyter scripts:
+Core runtime:
+`numpy`, `scipy`, `pandas`, `networkx`, `matplotlib`, `pydot`, `sqlalchemy`,
+`pyfiglet`, `bootstrapped`, `jellyfish`, `statsmodels`, `ace-tools-open`.
 
-| filename                                  | description                                                                                      |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| scripts/single_run.py                     | Performs a single run of the method with specified parameters and randomly generated input data. |
-| scripts/histogram_learning_sequence.ipynb | Obtain comparison histograms form results data.                                                  |
-| scrpits/network_figure.ipynb              | Obtain figure of network graph.                                                                  |
+Optimization/tooling (optional by environment):
+`pyomo`, `glpk`, `highspy`, `pulp`, `amplpy`, `gurobipy`, `cplex`, `pygmo`.
 
-Python modules:
+Environment groups (`pyproject.toml`)
+-------------------------------------
 
-| filename                             | description                                                                                                                                                            |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| crash_code/db_driver.py              | Database driver.                                                                                                                                                       |
-| crash_code/generator_covariance.py   | Generates covariance matrices for the activity times.                                                                                                                  |
-| crash_code/generator_crash.py        | Generates activity crash times and costs.                                                                                                                              |
-| crash_code/generator_distribution.py | Generates PERT distributions for activity times.                                                                                                                       |
-| crash_code/generator_network.py      | Generates connected project network graphs.                                                                                                                            |
-| crash_code/generator_penalty.py      | Generates penalty linear and exponential values for the optimization problem.                                                                                          |
-| crash_code/generator_scenario.py     | Generates random samples based on activity times PERT and correlation matrix.                                                                                          |
-| crash_code/generator_subproblem.py   | Defines and solve with Gurobi an intermediate optimization problem with some fixed variables.                                                                          |
-| crash_code/knowledge_gradient.py     | Implements the Knowledge-Gradient algorithm with correlated beliefs.                                                                                                   |
-| crash_code/nearest_correlation.py    | Nick Higham's nearest correlation algorithm. Python implementation by Mike Croucher found [here](https://github.com/mikecroucher/nearest_correlation "Mike Croucher"). |
-| crash_code/optimize.py               | Commits problem to DB and calls the branch & bound method.                                                                                                             |
-| crash_code/stochastic.py             | Main file containing the branch & bound method and all supporting functions and methods. Includes methods to perform bootstrap and Pareto-based branching decision.    |
-| crash_code/uncrashed_bounds.py       | Solves the un-crashed and un-penalized scheduling problem on a single scenario to obtain bounds on costs and time.                                                     |
-| crash_code/utilities.py              | Numerical utility functions.                                                                                                                                           |
+| group | purpose | enable | disable |
+| ----- | ------- | ------ | ------- |
+| `dev` | Linting, typing, notebooks, pre-commit. | default | `uv sync --no-group dev` |
+| `doc` | MkDocs docs build stack. | `uv sync --group doc` | `uv sync --no-group doc` |
+| `open_opt` | Open-source optimization backends. | `uv sync --group open_opt` | `uv sync --no-group open_opt` |
+| `closed_opt` | Commercial optimization solvers. | `uv sync --group closed_opt` | `uv sync --no-group closed_opt` |
+| `package` | Packaging/publishing helpers. | `uv sync --group package` | `uv sync --no-group package` |
+
+Useful patterns:
+
+```bash
+# Runtime-only install (no default groups)
+uv sync --no-default-groups
+
+# Install only docs environment
+uv sync --only-group doc
+
+# Install all environments
+uv sync --all-groups
+```
+
+Project files
+-------------
+
+Scripts:
+
+| path | use |
+| ---- | --- |
+| `scripts/histogram_learning_sequence.ipynb` | Build comparison histograms from experiment outputs. |
+| `scripts/network_figure.ipynb` | Visualize generated project networks. |
+| `scripts/scratch.ipynb` | Ad-hoc exploration and experiments. |
+
+Source modules:
+
+| path | use |
+| ---- | --- |
+| `src/db_manager/__init__.py` | Package marker. |
+| `src/db_manager/driver.py` | SQLAlchemy models and DB I/O helpers for experiments, iterations, and solutions. |
+| `src/gen_manager/__init__.py` | Package marker. |
+| `src/gen_manager/covariance.py` | Generate random correlation/covariance structures. |
+| `src/gen_manager/crash.py` | Generate crash-time and crash-cost vectors. |
+| `src/gen_manager/distribution.py` | Generate PERT activity-time distributions and geometric probabilities. |
+| `src/gen_manager/network.py` | Generate layered DAG project networks and figures. |
+| `src/gen_manager/penalty.py` | Build penalty functions and penalty bounds. |
+| `src/gen_manager/scenario.py` | Sample correlated activity-time scenarios. |
+| `src/matrix_manager/__init__.py` | Package marker. |
+| `src/matrix_manager/nearest_correlation.py` | Nearest-correlation-matrix implementation (Higham-based). |
+| `src/matrix_manager/utilities.py` | Matrix and covariance/correlation utility helpers. |
+| `src/opt_manager/__init__.py` | Package marker. |
+| `src/opt_manager/generator_subproblem.py` | Build and solve subproblems for fixed branching decisions. |
+| `src/opt_manager/knowledge_gradient.py` | Knowledge-gradient routines for branch selection. |
+| `src/opt_manager/optimize.py` | Orchestrate DB initialization and optimization execution. |
+| `src/opt_manager/stochastic.py` | Core stochastic branch-and-bound algorithm and selection logic. |
+| `src/opt_manager/uncrashed_bounds.py` | Compute uncrashed baseline bounds with Gurobi. |
+| `src/opt_manager/uncrashed_bounds_pyomo.py` | Alternative uncrashed-bounds model via Pyomo/GLPK. |
+| `src/run_manager/__init__.py` | Package marker. |
+| `src/run_manager/single_run.py` | End-to-end single experiment runner with random data generation and output. |

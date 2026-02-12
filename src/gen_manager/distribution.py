@@ -13,16 +13,20 @@ def generate_pert_distributions(geom_prob: Dict[Any, float]) -> Dict[str, Any]:
     Parameters
     ----------
     geom_prob : dict
-        Dictionary with nodes as keys (int) and probabilities as values (float)
-       Probabilities for Geometric distributions used to
-       select the activities' Beta distributions
+        Dictionary with nodes as keys (int) and geometric probabilities as values
+        (float). The probabilities are used to sample the optimistic, most-likely,
+        and pessimistic activity-time parameters.
 
     Returns
-    distributions : dict
-       Dictionary with nodes (int) as keys and values the corresponding
-       beta distribution (scipy.stats._distn_infrastructure.rv_frozen) of activity
-       times.
-       beta distribution of activity times.
+    -------
+    dict of str to Any
+        Dictionary with:
+
+        - ``"distributions"``: mapping from node id to frozen
+          ``scipy.stats.beta`` distributions.
+        - ``"optimistic"``: list of optimistic activity durations.
+        - ``"most_likely"``: list of most-likely activity durations.
+        - ``"pessimistic"``: list of pessimistic activity durations.
     """
     # Set maximum iterations for sub-loops
     max_iterations = 10_000
@@ -110,13 +114,13 @@ def generate_geometric(no_of_nodes: int) -> Dict[int, float]:
     Parameters
     ----------
     no_of_nodes : int
-       Number of nodes in the network graph
+        Number of nodes in the network graph.
 
     Returns
-    ----------
-    geom_prob : dictionary
-       Dictionary with nodes as keys and values the corresponding
-       geometric distribution probability.
+    -------
+    dict of int to float
+        Dictionary with node ids as keys and random geometric probabilities as
+        values.
     """
     # geom_prob = {i: random.uniform(0.001, 1) for i in range(1, no_of_nodes + 1)}
     secure_random = secrets.SystemRandom()

@@ -1,4 +1,9 @@
-"""Database driver."""
+"""PostgreSQL persistence layer for crash experiments.
+
+Defines SQLAlchemy ORM models (Meta, Experiment, Iteration, Output) and
+exposes a factory function that returns five closures for writing
+experiment data to the database.
+"""
 
 import json
 import os
@@ -62,65 +67,26 @@ def initialize_db() -> Tuple[  # pylint: disable=too-many-statements
     Base: Type = declarative_base()  # pylint: disable=invalid-name
 
     class Meta(Base):  # pylint: disable=unused-variable
-        """
-        Meta class representing the metadata for crash experiments.
+        """Metadata grouping for crash experiments.
 
-        This class is used to store metadata for crash experiments, including
-        the experiments associated with the metadata. In other words, this class
-        is used to manage the meta experiments.
-
-        Attributes:
-            __tablename__ (str): The name of the table in the database.
-            id (Column): The primary key for the table, using a sequence for unique
-            values.
-            experiments (Column): An array of BIGINTs representing the experiments
-            associated with the metadata.
+        Attributes
+        ----------
+        id : Column(BIGINT)
+            Primary key (auto-sequenced).
+        experiments : Column(ARRAY(BIGINT))
+            Array of experiment IDs belonging to this group.
         """
 
         __tablename__ = "crash_meta"
         id = Column(BIGINT, Sequence("crash_meta_id_seq"), primary_key=True)
         experiments = Column(ARRAY(BIGINT), nullable=False)
 
-    # Class to manage single experiment data
     class Experiment(Base):
-        """
-        Represents an experiment in the crash code database.
+        """Single crash experiment with full problem definition and results.
 
-        Attributes:
-            iterations (relationship): Relationship to the Iteration model.
-            results (relationship): Relationship to the Output model.
-            id (Column): Primary key for the experiment.
-            network (Column): JSONB column representing the network.
-            no_of_edges (Column): Number of edges in the network.
-            no_of_nodes (Column): Number of nodes in the network.
-            most_likely (Column): Array of most likely values.
-            optimistic (Column): Array of optimistic values.
-            pessimistic (Column): Array of pessimistic values.
-            cov_mat (Column): Covariance matrix in BYTEA format.
-            crash_cost (Column): Array of crash costs.
-            crash_time (Column): Array of crash times.
-            penalty_b1 (Column): Penalty b1 value.
-            penalty_m (Column): Penalty m value.
-            penalty_steps (Column): Number of penalty steps.
-            t_final (Column): Final time value.
-            t_init (Column): Initial time value.
-            penalty_type (Column): Type of penalty.
-            kg_l (Column): KG l value.
-            kg_sigma (Column): KG sigma value.
-            kg_lambda (Column): KG lambda value in JSONB format.
-            kg_mu (Column): KG mu value in JSONB format.
-            bootstrap (Column): Boolean indicating if bootstrap is used.
-            confidence (Column): Confidence value.
-            resamples (Column): Number of resamples.
-            pareto_beta (Column): Pareto beta value.
-            scenarios_per_estimation (Column): Number of scenarios per estimation.
-            total_scenarios (Column): Total number of scenarios.
-            method_type (Column): Type of method used.
-            seed (Column): Seed value.
-            seed_np (Column): Seed value for numpy.
-            network_figure (Column): Network figure in BYTEA format.
-            network_pos (Column): Network position in JSONB format.
-            exp_time (Column): Experiment time.
+        Stores the project network, PERT parameters, crash alternatives,
+        penalty configuration, method settings, and elapsed time.  Has
+        one-to-many relationships to ``Iteration`` and ``Output``.
         """
 
         __tablename__ = "crash_experiment"
@@ -171,25 +137,11 @@ def initialize_db() -> Tuple[  # pylint: disable=too-many-statements
 
         exp_time = Column(DOUBLE_PRECISION)
 
-    # Class to manage iteration data
     class Iteration(Base):
-        """
-        Represents an iteration in the crash experiment.
+        """Snapshot of the B&B tree state after one SB&B iteration.
 
-        Attributes:
-            id (BIGINT): Primary key for the iteration.
-            exp_id (BIGINT): Foreign key referencing the crash_experiment table.
-            cov (JSONB): Covariance data.
-            kg_mu (ARRAY of DOUBLE_PRECISION): Knowledge gradient mean values.
-            kg_lambda (ARRAY of DOUBLE_PRECISION): Knowledge gradient lambda values.
-            constr_tree (JSONB): Constraint tree data.
-            kg_e_tree (ARRAY of DOUBLE_PRECISION): Knowledge gradient e-tree values.
-            e_tree (ARRAY of DOUBLE_PRECISION): E-tree values.
-            std_tree (ARRAY of DOUBLE_PRECISION): Standard deviation tree values.
-            recordset_tree (ARRAY of BOOLEAN): Recordset tree data.
-            singleton_tree (ARRAY of BOOLEAN): Singleton tree data.
-            iteration_num (BIGINT): The iteration number.
-            iter_time (DOUBLE_PRECISION): The time taken for the iteration.
+        Stores the KG belief vectors, constraint tree, per-leaf bound
+        estimates, and wall-clock time for a single iteration.
         """
 
         __tablename__ = "crash_iteration"
@@ -209,19 +161,11 @@ def initialize_db() -> Tuple[  # pylint: disable=too-many-statements
         iteration_num = Column(BIGINT, nullable=False)
         iter_time = Column(DOUBLE_PRECISION)
 
-    # Class to manage output data
     class Output(Base):
-        """
-        Represents the output of a crash experiment.
+        """Final or intermediate solution produced by the optimizer.
 
-        Attributes:
-            id (int): Primary key, unique identifier for the output.
-            exp_id (int): Foreign key referencing the crash experiment.
-            e_sol (float): Solution energy value.
-            e_data (list of float): Array of energy data values.
-            std_sol (float): Standard deviation of the solution.
-            std_data (list of float): Array of standard deviation data values.
-            partial_sol (dict): JSONB field containing partial solution data.
+        Stores the expected cost, per-leaf cost array, standard deviation,
+        and the partial crashing solution as JSON.
         """
 
         __tablename__ = "crash_output"
@@ -249,16 +193,22 @@ def initialize_db() -> Tuple[  # pylint: disable=too-many-statements
         attributes: Dict[str, Any],
         run_time: float = 0.0,
     ) -> int:
-        """Push experiment to database.
+        """Serialize and insert a new experiment row.
 
-        Args:
-            seeds (List[int]): A list containing two seed values, one for general use
-            and one for numpy.
-            attributes (Dict[str, Any]): List of attributes related to the experiment.
-            run_time (float): The time taken to run the experiment. Defaults to 0.0.
+        Parameters
+        ----------
+        seeds : list of int
+            Two-element list ``[general_seed, numpy_seed]``.
+        attributes : dict
+            Problem and method attributes produced by
+            ``initialize_attributes``.
+        run_time : float, optional
+            Elapsed wall-clock time in seconds (default 0.0).
 
-        Returns:
-            int: The ID of the newly created experiment.
+        Returns
+        -------
+        int
+            Primary-key ID of the newly created experiment row.
         """
         nonlocal experiment_id
         nonlocal session
@@ -365,10 +315,16 @@ def initialize_db() -> Tuple[  # pylint: disable=too-many-statements
         return
 
     def update_exp_time(new_time: float) -> None:
-        """Update experiment time.
+        """Overwrite the elapsed time on the current experiment row.
 
-        Args:
-            new_time (float): The new experiment time to be updated.
+        Parameters
+        ----------
+        new_time : float
+            New wall-clock time in seconds.
+
+        Returns
+        -------
+        None
         """
         nonlocal experiment_id
         nonlocal session
@@ -379,17 +335,18 @@ def initialize_db() -> Tuple[  # pylint: disable=too-many-statements
         return
 
     def push_solution_db(solution: Dict[str, Any]) -> None:
-        """Push solution to database.
+        """Insert a solution row for the current experiment.
 
-        Args:
-            solution (Dict[str, Any]): A dictionary containing the solution data with
-            keys:
-                - "E_solution" (float): Solution energy value.
-                - "E_data" (List[float]): Array of energy data values.
-                - "Std_sol" (float): Standard deviation of the solution.
-                - "Std_data" (List[float]): Array of standard deviation data values.
-                - "Partial_sol" (Dict[str, Any]): Partial solution data in JSON
-                  serializable format.
+        Parameters
+        ----------
+        solution : dict
+            Keys: ``"E_solution"`` (float), ``"E_data"`` (list of float),
+            ``"Std_sol"`` (float), ``"Std_data"`` (list of float),
+            ``"Partial_sol"`` (dict, JSON-serialisable).
+
+        Returns
+        -------
+        None
         """
         nonlocal experiment_id
         nonlocal session
@@ -407,8 +364,13 @@ def initialize_db() -> Tuple[  # pylint: disable=too-many-statements
         session.commit()
         return
 
-    def close_db():
-        """Close session."""
+    def close_db() -> None:
+        """Close the SQLAlchemy session.
+
+        Returns
+        -------
+        None
+        """
         nonlocal session
         session.close()
         return
