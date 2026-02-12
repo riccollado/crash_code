@@ -16,49 +16,17 @@ repos:
       - id: remove-crlf
       - id: forbid-crlf
 
-  # Remove unused imports.
-  - repo: https://github.com/pycqa/autoflake
-    rev: v2.3.1
+  # Ruff replaces Black, isort, flake8, autoflake, pydocstyle
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.11.13
     hooks:
-      - id: autoflake
-        args:
-          [
-            --in-place,
-            --remove-all-unused-imports,
-            --ignore-init-module-imports,
-          ]
-
-  # Sort imports.
-  - repo: https://github.com/pycqa/isort
-    rev: 6.0.1
-    hooks:
-      - id: isort
-        args: ["--profile", "black"]
-        additional_dependencies: ["toml"]
-
-  # Autoformat.
-  - repo: https://github.com/psf/black
-    rev: 25.1.0
-    hooks:
-      - id: black
-        additional_dependencies: ["toml"]
-
-  # Run basic linter.
-  - repo: https://github.com/pycqa/flake8
-    rev: 7.1.2
-    hooks:
-      - id: flake8
-
-  # Check code documentation.
-  - repo: https://github.com/PyCQA/pydocstyle
-    rev: 6.3.0
-    hooks:
-      - id: pydocstyle
-        additional_dependencies: ["toml"]
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
 
   # Check python types with MyPy
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.15.0
+    rev: v1.16.0
     hooks:
       - id: mypy
 
