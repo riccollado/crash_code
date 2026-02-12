@@ -1,4 +1,9 @@
-"""Main stochastic optimization module."""
+"""Core stochastic branch-and-bound implementation.
+
+Implements the complete SB&B algorithm with multiple branching strategies (KG,
+Random, Uniform, Distance, Pareto), scenario allocation, bound estimation, and
+optional bootstrap variance reduction.
+"""
 
 import math
 import time

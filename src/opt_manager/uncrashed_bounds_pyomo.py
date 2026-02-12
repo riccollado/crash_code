@@ -1,4 +1,8 @@
-"""Uncrashed bounds method with Pyomo."""
+"""Uncrashed baseline bounds computation via Pyomo/GLPK.
+
+Alternative implementation of uncrashed scheduling bounds using Pyomo with the
+GLPK open-source solver backend.
+"""
 
 from typing import Any, List, Tuple
 

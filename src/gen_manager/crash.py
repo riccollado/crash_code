@@ -1,4 +1,8 @@
-"""Generate crashing times and costs."""
+"""Activity crashing parameter generation.
+
+Generates random crashing times (as percentages of normal duration) and crashing
+costs for project activities, with boundary activities (start/end) set to zero.
+"""
 
 from collections import deque
 from typing import List

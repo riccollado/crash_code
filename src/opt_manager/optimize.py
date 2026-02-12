@@ -1,4 +1,8 @@
-"""Commit problem to db and B&B method."""
+"""High-level optimization orchestration.
+
+Initializes database connectivity, executes the stochastic branch-and-bound
+algorithm, and commits experiment metadata and solutions to persistent storage.
+"""
 
 import time
 from typing import List, Tuple

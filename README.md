@@ -68,6 +68,26 @@ where <img src="https://latex.codecogs.com/svg.image?\mathbf{\beta}" title="\bet
 The application also stores every solution and iteration in a SQL database for later
 retrieval and statistical analysis.
 
+Documentation
+-------------
+
+**📚 Full documentation is available via MkDocs.**
+
+To view the complete documentation locally:
+
+```bash
+# Install the doc dependencies
+uv sync --group doc
+
+# Serve the documentation site
+uv run mkdocs serve
+```
+
+Then open your browser to **<http://127.0.0.1:8000>**
+
+The documentation includes detailed installation instructions, usage guides, API reference,
+and troubleshooting tips.
+
 Dependencies
 ------------
 

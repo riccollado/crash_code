@@ -1,4 +1,9 @@
-"""Main knowledge gradient algorithm methods."""
+"""Knowledge gradient for correlated normal beliefs.
+
+Implements the knowledge-gradient policy for stochastic branch-and-bound,
+enabling sequential sampling decisions based on Bayesian updating of correlated
+subproblem objectives.
+"""
 
 from functools import partial
 from typing import Any, List, Tuple

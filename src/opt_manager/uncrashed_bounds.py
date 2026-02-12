@@ -1,4 +1,8 @@
-"""Uncrashed bounds method."""
+"""Uncrashed baseline bounds computation via Gurobi.
+
+Solves the uncrashed (no activity compression) scheduling problem to establish
+baseline project duration bounds for penalty function calibration.
+"""
 
 from typing import List, Tuple
 

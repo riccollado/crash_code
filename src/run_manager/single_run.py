@@ -1,4 +1,9 @@
-"""Execute a single run of main method."""
+"""End-to-end single experiment runner.
+
+CLI entry point that generates a random project-crashing problem instance,
+configures the stochastic branch-and-bound solver with specified method
+parameters, executes the optimization, and displays the solution.
+"""
 
 import multiprocessing as mp
 import os

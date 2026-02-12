@@ -1,4 +1,9 @@
-"""Generate PERT and geometric distributions."""
+"""PERT activity-time distribution generation.
+
+Constructs Beta distributions for project activity durations using the PERT
+(Program Evaluation and Review Technique) three-point estimation method with
+optimistic, most-likely, and pessimistic times sampled via geometric distributions.
+"""
 
 import secrets
 from typing import Any, Dict

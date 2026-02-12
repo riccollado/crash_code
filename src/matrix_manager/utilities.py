@@ -1,4 +1,8 @@
-"""Utility functions."""
+"""Matrix definiteness checks and covariance-correlation conversion.
+
+Provides utilities for testing positive-(semi)definiteness of matrices and
+converting between covariance and correlation representations.
+"""
 
 from typing import Tuple
 

@@ -1,4 +1,8 @@
-"""Generate subproblems."""
+"""Subproblem formulation and optimization.
+
+Builds and solves Gurobi-based MILP subproblems with fixed branching decisions,
+incorporating piecewise penalty approximations and network-flow constraints.
+"""
 
 from typing import Any, Dict, List
 
@@ -67,7 +71,7 @@ def optimize_subproblem(
         One sampled scenario containing activity durations for all nodes.
 
     Returns
-    ----------
+    -------
     dict of str to Any
         Optimization results, including objective components, schedule values, penalty
         indicators, and crash decisions.

@@ -1,4 +1,8 @@
-"""Generate experiment scenarios."""
+"""Correlated scenario generation via Gaussian copula.
+
+Generates samples of correlated activity durations using a Gaussian copula with
+specified correlation structure and marginal PERT distributions.
+"""
 
 from typing import Any, Dict
 

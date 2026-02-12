@@ -1,4 +1,8 @@
-"""Generate penalty methods."""
+"""Penalty function generation and bounds computation.
+
+Provides linear and exponential penalty functions for project deadline overruns,
+and computes penalty bounds by solving uncrashed baseline scenarios.
+"""
 
 from typing import Any, Dict, List
 

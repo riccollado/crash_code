@@ -1,4 +1,9 @@
-"""Generate covariance matrix."""
+"""Random correlation matrix generation.
+
+Constructs symmetric positive-semidefinite correlation matrices by projecting
+randomly populated matrices onto the nearest correlation matrix using Higham's
+algorithm.
+"""
 
 import secrets
 
@@ -16,7 +21,7 @@ def generate_cov_mat(size: int) -> np.ndarray:
        Dimension of the square correlation matrix
 
     Returns
-    ----------
+    -------
     corr_mat : numpy.ndarray
        Correlation matrix
     """

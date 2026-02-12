@@ -1,4 +1,8 @@
-"""Generate experiment networks."""
+"""Project network graph generation.
+
+Constructs random layered directed acyclic graphs (DAGs) representing project
+activity networks with configurable node count, layer depth, and edge density.
+"""
 
 import io
 import secrets
