@@ -197,6 +197,7 @@ keys/
 
 # Remove output from the repository
 output/
+sql/
 
 # Logs
 logs/
