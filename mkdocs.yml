@@ -1,0 +1,3 @@
+INHERIT: documentation/mkdocs.yml
+docs_dir: documentation/docs
+site_dir: site

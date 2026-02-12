@@ -33,16 +33,16 @@ def sigma(
     Parameters
     ----------
     S : np.array
-       Covariance matrix
+        Covariance matrix.
     x : int
-       Alternative coordinate
+        Alternative coordinate.
     lambda_ : numpy.ndarray
-       Alternative's known variances
+        Alternative's known variances.
 
     Returns
-    ----------
-    numpy.ndarray : numpy.ndarray
-       Vector calculation of Sigma function
+    -------
+    numpy.ndarray
+        Vector calculation of Sigma function.
     """
     # Here we have to remember that x indexing goes from 1 to M
     matrix_shape = S.shape[0]
