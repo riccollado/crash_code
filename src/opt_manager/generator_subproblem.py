@@ -1,6 +1,9 @@
 """Generate subproblems."""
 
+from typing import Any, Dict, List
+
 import gurobipy as gp
+import networkx as nx
 
 from gen_manager.penalty import (
     generate_penalty_vals_exponential,
@@ -9,73 +12,65 @@ from gen_manager.penalty import (
 
 
 def optimize_subproblem(
-    network,
-    crash_time,
-    crash_cost,
-    subproblem,
-    t_init,
-    t_final,
-    pessimistic,
-    penalty_type,
-    m,
-    b1,
-    penalty_steps,
-    scenario,
-):
+    network: nx.DiGraph,
+    crash_time: List[float],
+    crash_cost: List[float],
+    subproblem: Dict[str, Any],
+    t_init: float,
+    t_final: float,
+    pessimistic: List[float],
+    penalty_type: str,
+    m: float,
+    b1: float,
+    penalty_steps: float,
+    scenario: List[float],
+) -> Dict[str, Any]:
     """Define and solve an optimization problem where some variables are fixed.
 
     Parameters
     ----------
-    network : networkx.classes.digraph.DiGraph
-       Full network diagraph
+    network : networkx.DiGraph
+        Full project network digraph.
 
-    crash_time : list
-       Activity crash percentage
+    crash_time : list of float
+        Activity crash percentage values.
 
-    crash_cost : list
-       Activity crash cost
+    crash_cost : list of float
+        Activity crash costs.
 
-    subproblem : dict
-       Dictionary with keys: 'variables', 'constraints',
-       'recordset', 'singleton', 'sample_solutions', 'E',
-       'num_sample_solutions', 'total_scenarios_done', and
-       'scenarios_done'
+    subproblem : dict of str to Any
+        Subproblem definition with fixed variables and constraints for the current
+        branch.
 
     t_init : float
-       Lower threshold for penalty function
+        Lower threshold for the penalty function.
 
     t_final : float
-       Upper threshold for penalty function
+        Upper threshold for the penalty function.
 
-    outlocation : str
-       Name of output files folder
-
-    pessimistic : list
-       Duration of pessimistic values of activities
+    pessimistic : list of float
+        Pessimistic duration values for all activities.
 
     penalty_type : str
-       Either "linear" or "exponential"
+        Penalty type: ``"linear"`` or ``"exponential"``.
 
     m : float
-       M parameter for penalty function
+        Penalty function multiplier.
 
     b1 : float
-       b1 parameter for penalty function
+        Penalty function intercept/base parameter.
 
-    scenario : list
-       List of values for all nodes of the graph (including
-       start and end) that comprises one scenario
+    penalty_steps : float
+        Number of steps used in the piecewise penalty approximation.
 
-    penalty_steps : __type__
-        Steps used in penalty function.
+    scenario : list of float
+        One sampled scenario containing activity durations for all nodes.
 
     Returns
     ----------
-    scenariodetailslog : dict
-       Dictionary containing details on the solution of the
-       subproblem. The kays are: 'Penalty', 'Objective func Value',
-       'Regular Costs', 'Project Duration', 'Schedule',
-       'Penalty Variables', and all optimal crash values.
+    dict of str to Any
+        Optimization results, including objective components, schedule values, penalty
+        indicators, and crash decisions.
     """
     # Get number of nodes
     no_of_nodes = network.number_of_nodes()

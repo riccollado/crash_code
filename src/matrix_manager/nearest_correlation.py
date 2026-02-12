@@ -12,13 +12,36 @@ PyLint checks.
 import numpy as np
 from numpy import copy, inf
 from numpy.linalg import norm
+from typing import Any
 
 
 class ExceededMaxIterationsError(Exception):
     """Error class for exceeding iterations."""
 
-    def __init__(self, msg, matrix=None, iteration=None, ds=None):
-        """Initialize instance."""
+    def __init__(
+        self,
+        msg: str,
+        matrix: np.ndarray | list[Any] | None = None,
+        iteration: int | list[int] | None = None,
+        ds: np.ndarray | list[Any] | None = None,
+    ) -> None:
+        """Initialize restart state for near-correlation iterations.
+
+        Parameters
+        ----------
+        msg : str
+            Error message describing why the iteration stopped.
+        matrix : numpy.ndarray or list, optional
+            Last candidate matrix produced by the algorithm.
+        iteration : int or list of int, optional
+            Iteration count reached before stopping.
+        ds : numpy.ndarray or list, optional
+            Last correction matrix used by the alternating projection.
+
+        Returns
+        -------
+        None
+        """
         if matrix is None:
             matrix = []
         if iteration is None:
@@ -30,45 +53,59 @@ class ExceededMaxIterationsError(Exception):
         self.iteration = iteration
         self.ds = ds
 
-    def __str__(self):
-        """Provide description string for instance."""
+    def __str__(self) -> str:
+        """Provide a printable representation of the error.
+
+        Returns
+        -------
+        str
+            Stored error message.
+        """
         return repr(self.msg)
 
 
 def nearcorr(
-    symmetric_input_matrix,
-    tol=None,
-    flag=0,
-    max_iterations=100,
-    weights=None,
-    except_on_too_many_iterations=True,
-):
-    """Find nearest correlation.
+    symmetric_input_matrix: np.ndarray | ExceededMaxIterationsError,
+    tol: list[float] | np.ndarray | None = None,
+    flag: int = 0,
+    max_iterations: int = 100,
+    weights: list[float] | np.ndarray | None = None,
+    except_on_too_many_iterations: bool = True,
+) -> np.ndarray:
+    """Compute the nearest correlation matrix for a symmetric input matrix.
 
-    X = nearcorr(symmetric_input_matrix, tol=[], flag=0, max_iterations=100,
-    weights=None, print=0)
+    Parameters
+    ----------
+    symmetric_input_matrix : numpy.ndarray or ExceededMaxIterationsError
+        Symmetric matrix to be projected, or an error object containing a restart
+        state from a previous run.
+    tol : list of float or numpy.ndarray, optional
+        Convergence tolerance. If omitted, the implementation default is used.
+    flag : int, default=0
+        Projection mode. ``0`` uses full eigendecomposition. ``1`` is reserved and
+        currently not implemented.
+    max_iterations : int, default=100
+        Maximum number of alternating-projection iterations.
+    weights : list of float or numpy.ndarray, optional
+        Diagonal weights for the weighted Frobenius norm projection.
+    except_on_too_many_iterations : bool, default=True
+        Whether to raise an exception when convergence is not achieved within
+        ``max_iterations``.
 
-    Finds the nearest correlation matrix to the symmetric matrix symmetric_input_matrix.
+    Returns
+    -------
+    numpy.ndarray
+        Projected nearest correlation matrix.
 
-    symmetric_input_matrix is a symmetric numpy array or a ExceededMaxIterationsError
-    object.
-
-    tol is a convergence tolerance, which defaults to 16*EPS. If using flag == 1, tol
-    must be a size 2 tuple, with first component the convergence tolerance and second
-    component a tolerance for defining "sufficiently positive" eigenvalues.
-
-    flag = 0: solve using full eigen decomposition (EIG). flag = 1: treat as "highly
-    non-positive definite A" and solve using partial eigen decomposition (EIGS).
-    CURRENTLY NOT IMPLEMENTED
-
-    max_iterations is the maximum number of iterations (default 100, but may need to be
-    increased).
-
-    weights is an optional vector defining a diagonal weight matrix diag(W).
-
-    except_on_too_many_iterations = True to raise an exception when number of iterations
-    exceeds max_iterations except_on_too_many_iterations = False to silently return the
-    best result found after max_iterations number of iterations
+    Raises
+    ------
+    ValueError
+        If the input matrix is not symmetric.
+    ExceededMaxIterationsError
+        If convergence is not achieved and
+        ``except_on_too_many_iterations`` is True.
+    NotImplementedError
+        If ``flag`` is set to 1.
     """
     if tol is None:
         tol = []
@@ -139,8 +176,19 @@ def nearcorr(
     return X
 
 
-def proj_spd(A):
-    """Projected SPD."""
+def proj_spd(A: np.ndarray) -> np.ndarray:
+    """Project a symmetric matrix onto the positive semidefinite cone.
+
+    Parameters
+    ----------
+    A : numpy.ndarray
+        Symmetric matrix to project.
+
+    Returns
+    -------
+    numpy.ndarray
+        Positive semidefinite matrix obtained after clipping negative eigenvalues.
+    """
     # NOTE: the input matrix is assumed to be symmetric
     d, v = np.linalg.eigh(A)
     A = (v * np.maximum(d, 0)).dot(v.T)

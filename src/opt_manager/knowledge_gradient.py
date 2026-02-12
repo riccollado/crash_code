@@ -1,7 +1,7 @@
 """Main knowledge gradient algorithm methods."""
 
 from functools import partial
-from typing import List, Tuple
+from typing import Any, List, Tuple
 
 import numpy as np
 from scipy.stats import norm
@@ -272,7 +272,12 @@ def kg_iteration(
     return x - 1, v
 
 
-def kg_multi(mu, S, lambda_, pool):
+def kg_multi(
+    mu: np.ndarray,
+    S: np.ndarray,
+    lambda_: np.ndarray,
+    pool: Any,
+) -> Tuple[int, float]:
     """KG algorithm: parallelized for large instances.
 
     Parameters
