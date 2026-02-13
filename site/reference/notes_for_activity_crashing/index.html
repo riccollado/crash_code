@@ -1,0 +1,1350 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+
+        <meta name="description" content="Documentation for the stochastic branch-and-bound project crashing optimizer.">
+
+
+        <meta name="author" content="Ricardo A. Collado">
+
+
+
+        <link rel="prev" href="../evolutionary_method/">
+
+
+        <link rel="next" href="../partitioning_algorithm_notes/">
+
+
+
+
+
+      <link rel="icon" href="../../assets/images/avatar.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+
+
+
+        <title>Notes for Activity Crashing - Learning to Crash</title>
+
+
+
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+
+
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+
+
+
+
+
+
+
+
+
+
+
+
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+
+
+
+      <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+
+
+
+
+
+  </head>
+
+
+
+
+
+
+
+
+
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="light-blue">
+
+
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+
+
+        <a href="#notes-for-activity-crashing-project" class="md-skip">
+          Skip to content
+        </a>
+
+    </div>
+    <div data-md-component="announce">
+
+    </div>
+
+
+
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Learning to Crash" class="md-header__button md-logo" aria-label="Learning to Crash" data-md-component="logo">
+
+  <img src="../../assets/images/avatar.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Learning to Crash
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+
+              Notes for Activity Crashing
+
+          </span>
+        </div>
+      </div>
+    </div>
+
+
+        <form class="md-header__option" data-md-component="palette">
+
+
+
+
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="light-blue"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+
+
+</form>
+
+
+
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+
+
+
+
+
+        <label class="md-header__button md-icon" for="__search">
+
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+  </nav>
+
+</header>
+
+    <div class="md-container" data-md-component="container">
+
+
+
+
+
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+
+
+
+
+
+
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+
+
+
+
+
+  Home
+
+      </a>
+    </li>
+
+
+
+
+
+
+
+
+
+
+      <li class="md-tabs__item">
+        <a href="../../getting-started/installation/" class="md-tabs__link">
+
+
+
+  Getting Started
+
+        </a>
+      </li>
+
+
+
+
+
+
+
+
+
+
+
+      <li class="md-tabs__item">
+        <a href="../../problem/learning-to-crash/" class="md-tabs__link">
+
+
+
+  Problem Details
+
+        </a>
+      </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../related-literature/" class="md-tabs__link">
+
+
+
+  Reference
+
+        </a>
+      </li>
+
+
+
+
+    </ul>
+  </div>
+</nav>
+
+
+
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+
+
+
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+
+
+
+
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Learning to Crash" class="md-nav__button md-logo" aria-label="Learning to Crash" data-md-component="logo">
+
+  <img src="../../assets/images/avatar.png" alt="logo">
+
+    </a>
+    Learning to Crash
+  </label>
+
+  <ul class="md-nav__list" data-md-scrollfix>
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Home
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item md-nav__item--nested">
+
+
+
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+
+
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Getting Started
+
+
+
+  </span>
+
+
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+
+
+    Getting Started
+
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Installation
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../../getting-started/running/" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Running the Project
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+          </ul>
+        </nav>
+
+    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item md-nav__item--nested">
+
+
+
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+
+
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Problem Details
+
+
+
+  </span>
+
+
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+
+
+    Problem Details
+
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../../problem/learning-to-crash/" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Learning to Crash
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+          </ul>
+        </nav>
+
+    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+
+
+
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+
+
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Reference
+
+
+
+  </span>
+
+
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+
+
+    Reference
+
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../related-literature/" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Research Library
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../source-layout/" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Source Layout
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../api-overview/" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    API Overview
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+
+
+
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" checked>
+
+
+          <label class="md-nav__link" for="__nav_4_4" id="__nav_4_4_label" tabindex="">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Technical Notes
+
+
+
+  </span>
+
+
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+
+
+    Technical Notes
+
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../evolutionary_method/" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Evolutionary Method
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item md-nav__item--active">
+
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+
+
+
+
+
+      <a href="./" class="md-nav__link md-nav__link--active">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Notes for Activity Crashing
+
+
+
+  </span>
+
+
+
+      </a>
+
+    </li>
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../partitioning_algorithm_notes/" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Partitioning Algorithm Notes
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+          </ul>
+        </nav>
+
+    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+
+
+
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" >
+
+
+          <label class="md-nav__link" for="__nav_4_5" id="__nav_4_5_label" tabindex="">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Papers
+
+
+
+  </span>
+
+
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_5">
+            <span class="md-nav__icon md-icon"></span>
+
+
+    Papers
+
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../papers/bootstrap.pdf" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Bootstrap (PDF)
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../papers/crash_learning.pdf" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Crash Learning (PDF)
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../papers/fast_nondominated_sorting_approach.pdf" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Fast Nondominated Sorting (PDF)
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../papers/project_simulation_using_pert_beta_distributions.pdf" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Project Simulation with PERT-Beta (PDF)
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../papers/stochastic_branch_and_bound.pdf" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Stochastic Branch-and-Bound (PDF)
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+
+
+
+
+
+
+    <li class="md-nav__item">
+      <a href="../papers/stochastic_integer_opt.pdf" class="md-nav__link">
+
+
+
+  <span class="md-ellipsis">
+
+
+    Stochastic Integer Optimization (PDF)
+
+
+
+  </span>
+
+
+
+      </a>
+    </li>
+
+
+
+
+          </ul>
+        </nav>
+
+    </li>
+
+
+
+
+          </ul>
+        </nav>
+
+    </li>
+
+
+
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+
+
+
+
+
+
+</nav>
+                  </div>
+                </div>
+              </div>
+
+
+
+            <div class="md-content" data-md-component="content">
+
+              <article class="md-content__inner md-typeset">
+
+
+
+
+
+<h1 id="notes-for-activity-crashing-project">Notes for Activity Crashing Project<a class="headerlink" href="#notes-for-activity-crashing-project" title="Permanent link">&para;</a></h1>
+<p>A.  <strong>Program 1: Generate a graph (activity on arrow) for 1 project.</strong></p>
+<p>The graph should be acyclic, connected and should have one start and end point.</p>
+<p>For detailed description of the steps to follow see "Graph Generation Algorithm.pdf".
+Basic description of steps to follow:</p>
+<ol>
+<li>
+<p>Generate a skeleton graph such that it has multiple layers and every node in lower
+    layer is connected to one node in higher layer.</p>
+</li>
+<li>
+<p>Randomly add arcs from lower layers to higher layers.</p>
+</li>
+<li>
+<p>Add arcs between layers such that we do not create cycles (rooted directed trees)</p>
+</li>
+<li>
+<p>Check for connectivity</p>
+</li>
+<li>
+<p>Discard if not connected, keep the graph if connected.</p>
+</li>
+<li>
+<p>Repeat 1-5, if we did not get a graph</p>
+</li>
+</ol>
+<!-- -->
+
+<p>B.  <strong>Program 2: Obtain marginal PERT distributions of activity times</strong></p>
+<!-- -->
+
+<ol>
+<li>
+<p>Generate distributions of each activity of the project. To do this for each arc
+    "a_ij" we do:</p>
+<p>a.  Select an optimistic value for arc a_ij (denoted by a). We do this by sampling
+    from a geometric distribution with parameter p_a. (use numpy.random.geometric
+    for this).</p>
+<p>b.  Select the difference m-a, where a is the optimistic value and m is the most
+    likely value. Do this by sampling from a geometric distribution with parameter
+    p_ma</p>
+<p>c.  Select the difference b-m, where b is the pessimistic value and m is the most
+    likely value. Do this by sampling from a geometric distribution with parameter
+    p_bm.</p>
+<p>d.  We use the sampled differences to obtain the pessimistic (b) and most likely (m)
+    values.</p>
+<p>e.  We need to do some trial an error testing to set these values. What is important
+    is that the optimistic is positive enough such that we do not get negative
+    values when sampling from the corresponding PERT distribution. We also want p_bm
+    and p_ma to be similar (but this we might change).</p>
+<p>f.  Since we will generate many graphs, eventually we will select the parameters
+    p_a, p_ma, and p_bm randomly. But, at the beginning we do not need to do it like
+    that. So, initially just set these parameters by hand.</p>
+</li>
+<li>
+<p>For each arc, a_ij, we will use the PERT distribution with the [a, m, b] values
+    obtained for it in Step 1 above. To do this we translate the PERT into its
+    beta-distribution counterpart. The beta distribution (see scipy.stats.beta) uses two
+    parameters: α and β. We obtain α and β from the generated [a, m, b] values in the
+    following way:</p>
+<p><img alt="A group of mathematical equations AI-generated content may be
+incorrect." src="../../media/image1.png" /></p>
+<p>See file "Project Simulation Using Pert-beta distributions.pdf", equations (4') --
+(6').</p>
+<p>a.  In this way we know the distributions that we will eventually use for each of
+    the activity times.</p>
+<p>b.  For activity represented by arc a_ij, we denote its Pert distribution by D_ij
+    (D_ij is really given by the beta distribution with parameters \alpha, \beta
+    defined before).</p>
+<pre><code>i.  For later, we really want to generate a Python beta-PERT
+    random variable. It is important to use here something like\
+    D_ij = scipy.stats.beta(α, β)
+
+ii. We will use D_ij with the Gaussian copula and a generated
+    correlation matrix (next section) to generate the scenarios.
+</code></pre>
+</li>
+<li>
+<p>The output of this program is the set of all PERT-Beta distributions (one per
+    activity arc).</p>
+<p><strong>Important note</strong>: We will later use the distributions used to generate random [a,
+m, b] to model the belief vs. truth dichotomy of simulation.</p>
+<p><strong>Program 3: Generate correlation matrix</strong></p>
+</li>
+</ol>
+<!-- -->
+
+<ol>
+<li>
+<p>Select order for arcs</p>
+</li>
+<li>
+<p>Generate a symmetric matrix of dimension |arcs|*|arcs| with diagonal entries all
+    equal to 1 (to do this just generate the lower triangle and reflect it in the upper
+    triangle).</p>
+</li>
+<li>
+<p>For every set of arcs in the lower triangle we generate some random value between -1
+    and 1.</p>
+</li>
+<li>
+<p>Some arcs should be highly correlated (we can use a bias in the generation to achieve
+    this).</p>
+</li>
+<li>
+<p>Obtain a nearest correlation matrix to our generated matrix. We do this by applying
+    the algorithms from:\
+    \
+    <a href="https://nickhigham.wordpress.com/2013/02/13/the-nearest-correlation-matrix/">https://nickhigham.wordpress.com/2013/02/13/the-nearest-correlation-matrix/</a></p>
+<p>a.  A <strong>Python implementation</strong> of the nearest correlation algorithm can be found
+    here: (the files are included in the main email)\
+    <a href="https://github.com/mikecroucher/nearest_correlation">https://github.com/mikecroucher/nearest_correlation</a></p>
+</li>
+</ol>
+<!-- -->
+
+<p>C.  <strong>Program 4: Generate scenarios</strong></p>
+<p>The number of scenarios should be a parameter of the algorithm that we can adjust. The
+gist of the generation is to define a multivariate distribution which marginals are the
+exact same PERT distributions obtained before. The multivariate distribution will join
+the PERT marginals via a Gaussian Copula with the generated correlation matrix. The
+following steps explain how to do this. We repeat these steps for n number of scenarios:</p>
+<ol>
+<li>
+<p>Let d be the number of activities and <span class="arithmatex">\({a_1, ..., a_d}\)</span> be the set of all activities.
+    Create a multivariate standard-normal random variable with the generated correlation
+    matrix and sample n times from it. We do this at once with the following command:</p>
+<p>B1 = numpy.random.multivariate_normal(mean, corr, n)</p>
+<p>where mean = <span class="arithmatex">\([0, ... , 0]\)</span> is an array of <span class="arithmatex">\(d\)</span> zeroes, corr is the generated
+correlation matrix (Program 3), and n is the number of samples. The output of this
+is an array B1 with n elements where each B1[i] is a full sample of the
+multivariate normal distribution. B1[i] is an array of d values. We will use
+B1[i] to construct the ith scenario, i=0,...,n-1.</p>
+</li>
+<li>
+<p>Apply:</p>
+<p>B2 = scipy.stats.norm.cdf(B1)</p>
+<p>to transform normal to uniform random variates, and for each column/variable obtain
+uniform marginal distributions. At this point each column of B2 is a set of
+uniformly [0,1] distributed samples taken with correlation given by the generated
+correlation matrix. Each row of B2 has length d (i.e. number of arcs in the
+network). Each row will be transformed into a scenario.</p>
+</li>
+<li>
+<p>To each column i of B2, apply the inverse cdf of the PERT-beta distribution obtained
+    in Program 2 for the corresponding arc (activity). Remember that each column
+    correspond to an activity, so we need to map to its beta distribution D_i. We can do
+    this similar to this:</p>
+<p>a.  Suppose we have 3 activities and in Program 2 we did:</p>
+<pre><code>D_0 = scipy.stats.beta(0.3, 0.4)
+D_1 = scipy.stats.beta(0.67, 1.4)
+D_2 = scipy.stats.beta(1.3, 0.78)
+</code></pre>
+<p>b.  Then we would do: (ppf means inverse CDF in numpy)</p>
+<pre><code>D_0.ppf(B2\[:,0\])
+D_1.ppf(B2\[:,1\])
+D_2.ppf(B2\[:,2\])
+</code></pre>
+</li>
+<li>
+<p>We want to have the output of step 3 above in a matrix so we stack the results of
+    Step 3.b into a matrix by columns:</p>
+<p>a.  Instead of Step 3.b we do:</p>
+<pre><code>S = np.column_stack((D_0.ppf(B2[:,0]), D_1.ppf(B2[:,1]),
+D_2.ppf(B2[:,2])))
+</code></pre>
+</li>
+<li>
+<p>At this point we have a matrix of samples S with "d" (number of activities) columns
+    and "n" (number of samples) rows. <strong>Each row of S is a scenario</strong>.</p>
+</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+
+              </article>
+            </div>
+
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+
+      </main>
+
+        <footer class="md-footer">
+
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+
+
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+
+</div>
+
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+
+
+
+
+
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "content.code.copy", "search.suggest", "search.highlight"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+
+
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+
+        <script src="../../javascripts/mathjax.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+  </body>
+</html>

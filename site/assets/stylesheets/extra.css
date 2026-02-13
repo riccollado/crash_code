@@ -1,0 +1,57 @@
+:root {
+  --crash-primary: #102F5E;
+  --crash-accent: #4FA3FF;
+  --crash-background: #0B1E3D;
+  --crash-text: #FFFFFF;
+  --crash-muted: #D9E1EA;
+  --crash-code-bg: #0F1115;
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: var(--crash-primary);
+  --md-primary-fg-color--light: #1A4C90;
+  --md-primary-fg-color--dark: #0A2042;
+  --md-accent-fg-color: var(--crash-accent);
+
+  --md-default-bg-color: var(--crash-background);
+  --md-default-fg-color: var(--crash-text);
+  --md-default-fg-color--light: var(--crash-muted);
+  --md-default-fg-color--lighter: #AFC0D6;
+  --md-default-fg-color--lightest: #8EA5C2;
+
+  --md-code-bg-color: var(--crash-code-bg);
+  --md-typeset-a-color: var(--crash-accent);
+}
+
+[data-md-color-scheme="slate"] .md-typeset code {
+  background-color: var(--crash-code-bg);
+}
+
+[data-md-color-scheme="default"] .md-typeset :not(pre) > code {
+  background-color: #eaf2ff;
+  color: #1f2a44;
+  border: 1px solid #d6e4fb;
+}
+
+[data-md-color-scheme="default"] .md-typeset pre,
+[data-md-color-scheme="default"] .md-typeset pre > code,
+[data-md-color-scheme="default"] .md-typeset .highlight pre,
+[data-md-color-scheme="default"] .md-typeset .highlight code {
+  background-color: #eef3ff;
+  color: #1f2a44;
+}
+
+.hero-banner {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(79, 163, 255, 0.35);
+  box-shadow: 0 0.6rem 1.4rem rgba(0, 0, 0, 0.35);
+  margin-bottom: 1rem;
+}
+
+.hero-callout {
+  background: rgba(16, 47, 94, 0.45);
+  border: 1px solid rgba(79, 163, 255, 0.4);
+  border-radius: 0.5rem;
+  padding: 0.8rem 1rem;
+}
