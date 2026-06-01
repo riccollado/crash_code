@@ -192,7 +192,7 @@ def branch_bound_algorithm(
     subproblem["KG_sample_sol"] = []
     subproblem["name"] = increment_lc()
 
-    # Update cov_df matrix
+    # Update cov_df matrix — initialize as 1×1 for the root subproblem
     name = subproblem["name"]
     cov_df = pd.DataFrame(index=[name], columns=[name])
 
@@ -1002,6 +1002,10 @@ def pareto_fronts_probabilities(
     ]
 
     # Obtain the non-dominated sorting of points
+    if pg is None:
+        raise ImportError(
+            "pygmo is required for Pareto branching. Install it with: uv add pygmo"
+        )
     ndf, dl, dc, ndr = pg.fast_non_dominated_sorting(points=points)
 
     num_fronts = len(ndf)
