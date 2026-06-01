@@ -9,7 +9,7 @@ import multiprocessing as mp
 import os
 import platform
 import random
-from typing import Any, Dict
+from typing import Any
 
 import numpy as np
 from pyfiglet import Figlet
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     problem["crash_cost"] = generate_crash_cost(NO_OF_NODES, LOW_COST, HIGH_COST)
 
     # Generate penalty function
-    penalty: Dict[str, int | float | str | Any] = {}
+    penalty: dict[str, int | float | str | Any] = {}
     penalty["type"] = "linear"  # or "exponential"
     penalty["steps"] = 20.0
     penalty["m"] = 15.0
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     # ----------------------------------------------------------
     # Set method parameters
     # ----------------------------------------------------------
-    method: Dict[str, int | float | bool | str | mp.pool.Pool] = {}
+    method: dict[str, int | float | bool | str | mp.pool.Pool] = {}
     method["pool"] = pool
     method["type"] = "KG"
 

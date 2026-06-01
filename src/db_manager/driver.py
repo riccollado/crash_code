@@ -8,11 +8,11 @@ experiment data to the database.
 import json
 import os
 import pickle
-from typing import Any, Callable, Dict, List, Tuple, Type
+from typing import Any, Callable
 
 import pandas as pd
 from networkx.readwrite import json_graph
-from sqlalchemy import Column, ForeignKey, Sequence, create_engine
+from sqlalchemy import URL, Column, ForeignKey, Sequence, create_engine
 from sqlalchemy.dialects.postgresql import (
     ARRAY,
     BIGINT,
@@ -23,12 +23,10 @@ from sqlalchemy.dialects.postgresql import (
     JSONB,
     TEXT,
 )
-from sqlalchemy.engine.url import URL
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
 
 
-def initialize_db() -> Tuple[  # pylint: disable=too-many-statements
+def initialize_db() -> tuple[  # pylint: disable=too-many-statements
     Callable,
     Callable,
     Callable,
@@ -54,8 +52,8 @@ def initialize_db() -> Tuple[  # pylint: disable=too-many-statements
         - close_db: Function to close the database session.
     """
     # Database connection from environment variables
-    connect_url = URL(
-        "postgres",
+    connect_url = URL.create(
+        "postgresql",
         host=os.environ["crash_db_host"],
         port=os.environ["crash_db_port"],
         username=os.environ["crash_db_user"],
@@ -64,7 +62,7 @@ def initialize_db() -> Tuple[  # pylint: disable=too-many-statements
     )
 
     # db = create_engine(connect_url)
-    Base: Type = declarative_base()  # pylint: disable=invalid-name
+    Base: type = declarative_base()  # pylint: disable=invalid-name
 
     class Meta(Base):  # pylint: disable=unused-variable
         """Metadata grouping for crash experiments.
@@ -189,8 +187,8 @@ def initialize_db() -> Tuple[  # pylint: disable=too-many-statements
     experiment_id = 0
 
     def push_experiment_db(
-        seeds: List[int],
-        attributes: Dict[str, Any],
+        seeds: list[int],
+        attributes: dict[str, Any],
         run_time: float = 0.0,
     ) -> int:
         """Serialize and insert a new experiment row.
@@ -265,8 +263,8 @@ def initialize_db() -> Tuple[  # pylint: disable=too-many-statements
 
     def push_iteration_db(
         cov_matrix: pd.DataFrame,
-        partition_list: List[Dict[str, Any]],
-        attributes: Dict[str, Any],
+        partition_list: list[dict[str, Any]],
+        attributes: dict[str, Any],
         iteration_number: int,
         elapsed_iter_time: float,
     ) -> None:
@@ -329,12 +327,12 @@ def initialize_db() -> Tuple[  # pylint: disable=too-many-statements
         nonlocal experiment_id
         nonlocal session
 
-        experiment = session.query(Experiment).get(experiment_id)
+        experiment = session.get(Experiment, experiment_id)
         experiment.exp_time = new_time
         session.commit()
         return
 
-    def push_solution_db(solution: Dict[str, Any]) -> None:
+    def push_solution_db(solution: dict[str, Any]) -> None:
         """Insert a solution row for the current experiment.
 
         Parameters

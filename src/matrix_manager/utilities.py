@@ -4,11 +4,8 @@ Provides utilities for testing positive-(semi)definiteness of matrices and
 converting between covariance and correlation representations.
 """
 
-from typing import Tuple
-
 import numpy as np
 from numpy.typing import NDArray
-
 
 def is_pos_def(x: NDArray[np.float64]) -> bool:
     """Evaluate positive-definiteness.
@@ -25,7 +22,6 @@ def is_pos_def(x: NDArray[np.float64]) -> bool:
     """
     return np.all(np.linalg.eigvals(x) > 0)
 
-
 def is_pos_semi_def(x: NDArray[np.float64]) -> bool:
     """Evaluate positive-semi-definiteness.
 
@@ -41,10 +37,9 @@ def is_pos_semi_def(x: NDArray[np.float64]) -> bool:
     """
     return np.all(np.linalg.eigvals(x) >= 0)
 
-
 def correlation_from_covariance(
     covariance: NDArray[np.float64],
-) -> Tuple[NDArray[np.float64], NDArray[np.float64]]:
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
     """Get correlation from covariance.
 
     Parameters
@@ -64,7 +59,6 @@ def correlation_from_covariance(
     correlation = covariance / outer_v
     correlation[covariance == 0] = 0
     return correlation, v
-
 
 def covariance_from_correlation(
     correlation: NDArray[np.float64], v: NDArray[np.float64]

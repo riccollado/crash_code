@@ -5,16 +5,15 @@ costs for project activities, with boundary activities (start/end) set to zero.
 """
 
 from collections import deque
-from typing import List
 
-from numpy.random import uniform
+import numpy as np
 
 
 def generate_crash_times(
     no_of_nodes: int,
     low_limit: float,
     high_limit: float,
-) -> List[float]:
+) -> list[float]:
     """Generate activity crash times in percentage.
 
     Parameters
@@ -28,10 +27,10 @@ def generate_crash_times(
 
     Returns
     -------
-    List[float]
+    list[float]
         List of generated crash times.
     """
-    crash_time_deque = deque(uniform(low_limit, high_limit, no_of_nodes))
+    crash_time_deque = deque(np.random.uniform(low_limit, high_limit, no_of_nodes))
     crash_time_deque.appendleft(0.0)
     crash_time_deque.append(0.0)
 
@@ -44,7 +43,7 @@ def generate_crash_cost(
     no_of_nodes: int,
     low_cost: float,
     high_cost: float,
-) -> List[float]:
+) -> list[float]:
     """Generate activity crash costs.
 
     Parameters
@@ -58,10 +57,10 @@ def generate_crash_cost(
 
     Returns
     -------
-    List[float]
+    list[float]
         List of generated crash costs.
     """
-    crash_cost_deque = deque(uniform(low_cost, high_cost, no_of_nodes))
+    crash_cost_deque = deque(np.random.uniform(low_cost, high_cost, no_of_nodes))
     crash_cost_deque.appendleft(0.0)
     crash_cost_deque.append(0.0)
 

@@ -6,11 +6,10 @@ subproblem objectives.
 """
 
 from functools import partial
-from typing import Any, List, Tuple
+from typing import Any
 
 import numpy as np
 from scipy.stats import norm
-
 
 def f_func(z: float) -> float:
     """Provide required f function for KG evaluation.
@@ -26,7 +25,6 @@ def f_func(z: float) -> float:
         Result of the function evaluation.
     """
     return norm.pdf(z) + z * norm.cdf(z)
-
 
 def sigma(
     S: np.ndarray,
@@ -56,14 +54,13 @@ def sigma(
 
     return np.dot(S, e_x) / np.sqrt(lambda_[x - 1] + S[x - 1][x - 1])
 
-
 def update_mu_s(
     mu_n: np.ndarray,
     S_n: np.ndarray,
     lambda_: np.ndarray,
     x: int,
     y_n1: float,
-) -> Tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray]:
     """Get updated mu and S after taking a sample y at subproblem with name x.
 
     Parameters
@@ -102,11 +99,10 @@ def update_mu_s(
 
     return mu_n1, S_n
 
-
 def algorithm_1(
-    a: List[float],
-    b: List[float],
-) -> Tuple[List[float], List[int]]:
+    a: list[float],
+    b: list[float],
+) -> tuple[list[float], list[int]]:
     """Algorithm 1 from paper.
 
     Parameters
@@ -152,12 +148,11 @@ def algorithm_1(
 
     return c, A
 
-
 def kg_alg(
     mu: np.ndarray,
     S: np.ndarray,
     lambda_: np.ndarray,
-) -> Tuple[int, float]:
+) -> tuple[int, float]:
     """KG algorithm: single-threaded.
 
     Parameters
@@ -216,13 +211,12 @@ def kg_alg(
 
     return xx - 1, vv
 
-
 def kg_iteration(
     mu: np.ndarray,
     S: np.ndarray,
     lambda_: np.ndarray,
     x: int,
-) -> Tuple[int, float]:
+) -> tuple[int, float]:
     """Single KG iteration.
 
     Parameters
@@ -276,13 +270,12 @@ def kg_iteration(
 
     return x - 1, v
 
-
 def kg_multi(
     mu: np.ndarray,
     S: np.ndarray,
     lambda_: np.ndarray,
     pool: Any,
-) -> Tuple[int, float]:
+) -> tuple[int, float]:
     """KG algorithm: parallelized for large instances.
 
     Parameters

@@ -4,7 +4,7 @@ Builds and solves Gurobi-based MILP subproblems with fixed branching decisions,
 incorporating piecewise penalty approximations and network-flow constraints.
 """
 
-from typing import Any, Dict, List
+from typing import Any
 
 import gurobipy as gp
 import networkx as nx
@@ -14,21 +14,20 @@ from gen_manager.penalty import (
     generate_penalty_vals_linear,
 )
 
-
 def optimize_subproblem(
     network: nx.DiGraph,
-    crash_time: List[float],
-    crash_cost: List[float],
-    subproblem: Dict[str, Any],
+    crash_time: list[float],
+    crash_cost: list[float],
+    subproblem: dict[str, Any],
     t_init: float,
     t_final: float,
-    pessimistic: List[float],
+    pessimistic: list[float],
     penalty_type: str,
     m: float,
     b1: float,
     penalty_steps: float,
-    scenario: List[float],
-) -> Dict[str, Any]:
+    scenario: list[float],
+) -> dict[str, Any]:
     """Define and solve an optimization problem where some variables are fixed.
 
     Parameters

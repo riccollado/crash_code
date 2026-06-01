@@ -4,7 +4,7 @@ Provides linear and exponential penalty functions for project deadline overruns,
 and computes penalty bounds by solving uncrashed baseline scenarios.
 """
 
-from typing import Any, Dict, List
+from typing import Any
 
 from numpy import power
 
@@ -12,10 +12,10 @@ from opt_manager.uncrashed_bounds import uncrashed_project_time
 
 
 def generate_penalty_vals_linear(
-    t: List[float],
+    t: list[float],
     m: float,
     b1: float,
-) -> List[float]:
+) -> list[float]:
     """Generate penalty linear values.
 
     Parameters
@@ -32,16 +32,16 @@ def generate_penalty_vals_linear(
     vals : list of float
         Linear values of the form m*t[i] + b1 (except val[0] which is always zero).
     """
-    vals: List[float] = [0]
+    vals: list[float] = [0]
     vals.extend([m * t[i] + b1 for i in range(1, len(t))])
     return vals
 
 
 def generate_penalty_vals_exponential(
-    t: List[float],
+    t: list[float],
     m: float,
     b1: float,
-) -> List[float]:
+) -> list[float]:
     """Generate penalty exponential values.
 
     Parameters
@@ -59,15 +59,15 @@ def generate_penalty_vals_exponential(
         Exponential values of the form m * b1^(t[i]) (except val[0] which is always
         zero).
     """
-    vals: List[float] = [0]
+    vals: list[float] = [0]
     vals.extend([m * power(b1, t[i]) for i in range(1, len(t))])
     return vals
 
 
 def generate_penalty_bounds(
     network: Any,
-    pert_dist: Dict[str, List[float]],
-) -> List[float]:
+    pert_dist: dict[str, list[float]],
+) -> list[float]:
     """Obtain t_init and t_final for calculation of objective penalty function.
 
     This is done by solving the main problem without crashing with most likely
@@ -79,12 +79,12 @@ def generate_penalty_bounds(
     ----------
     network : Any
         The network representing the project.
-    pert_dist : dict of str to list of float
+    pert_dist : dict[str, list[float]]
         Dictionary containing 'most_likely' and 'pessimistic' scenarios.
 
     Returns
     -------
-    list of float
+    list[float]
         A list containing t_init and t_final values.
     """
     t_init, _ = uncrashed_project_time(network, pert_dist["most_likely"])

@@ -6,13 +6,13 @@ optimistic, most-likely, and pessimistic times sampled via geometric distributio
 """
 
 import secrets
-from typing import Any, Dict
+from typing import Any
 
 import numpy as np
 from scipy.stats import beta
 
 
-def generate_pert_distributions(geom_prob: Dict[Any, float]) -> Dict[str, Any]:
+def generate_pert_distributions(geom_prob: dict[Any, float]) -> dict[str, Any]:
     """Generate beta distributions for activity times.
 
     Parameters
@@ -24,7 +24,7 @@ def generate_pert_distributions(geom_prob: Dict[Any, float]) -> Dict[str, Any]:
 
     Returns
     -------
-    dict of str to Any
+    dict[str, Any]
         Dictionary with:
 
         - ``"distributions"``: mapping from node id to frozen
@@ -111,7 +111,7 @@ def generate_pert_distributions(geom_prob: Dict[Any, float]) -> Dict[str, Any]:
     }
 
 
-def generate_geometric(no_of_nodes: int) -> Dict[int, float]:
+def generate_geometric(no_of_nodes: int) -> dict[int, float]:
     """Generate probabilities for geometric distributions.
 
     Used to select the projects betas.
