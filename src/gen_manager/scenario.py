@@ -4,10 +4,9 @@ Generates samples of correlated activity durations using a Gaussian copula with
 specified correlation structure and marginal PERT distributions.
 """
 
-from typing import Any, Dict
+from typing import Any
 
 import numpy as np
-from numpy.random import multivariate_normal
 from scipy.stats import norm
 
 
@@ -15,7 +14,7 @@ def dynamic_scenarios(
     num_activities: int,
     num_scenarios: int,
     correlation_matrix: np.ndarray,
-    distribution_dict: Dict[int, Any],
+    distribution_dict: dict[int, Any],
 ) -> np.ndarray:
     """Generate samples based on activities and correlation matrix.
 
@@ -38,12 +37,12 @@ def dynamic_scenarios(
     """
     # Generate samples via Gaussian Copula
     mean = np.zeros(num_activities)
+    rng = np.random.default_rng()
     samples = norm.cdf(
-        multivariate_normal(  # pylint: disable=unexpected-keyword-arg
+        rng.multivariate_normal(
             mean=mean,
             cov=correlation_matrix,
             size=num_scenarios,
-            check_valid="raise",
         )
     )
     k_list = []

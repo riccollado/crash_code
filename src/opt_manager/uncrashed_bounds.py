@@ -4,16 +4,13 @@ Solves the uncrashed (no activity compression) scheduling problem to establish
 baseline project duration bounds for penalty function calibration.
 """
 
-from typing import List, Tuple
-
 import gurobipy as gp
 import networkx as nx
 
-
 def uncrashed_project_time(
     network: nx.DiGraph,
-    scenario: List[float],
-) -> Tuple[float, List[int]]:
+    scenario: list[float],
+) -> tuple[float, list[int]]:
     """Solves the uncrashed unpenalized scheduling problem on a single scenario.
 
     Parameters

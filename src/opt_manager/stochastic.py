@@ -8,13 +8,16 @@ optional bootstrap variance reduction.
 import math
 import time
 from functools import partial
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable
 
 import bootstrapped.bootstrap as bs
 import bootstrapped.stats_functions as bs_stats
 import numpy as np
 import pandas as pd
-import pygmo as pg
+try:
+    import pygmo as pg
+except ImportError:
+    pg = None
 from jellyfish import levenshtein_distance as l_dist
 from statsmodels.stats.correlation_tools import cov_nearest
 
@@ -40,21 +43,21 @@ def increment_lc() -> int:
 
 
 def initialize_attributes(
-    problem: Dict[str, Any],
-    method: Dict[str, Any],
-) -> Dict[str, Any]:
+    problem: dict[str, Any],
+    method: dict[str, Any],
+) -> dict[str, Any]:
     """Initialize common attributes and parameters needed for SB&B algorithm.
 
     Parameters
     ----------
-    problem : Dict[str, Any]
+    problem : dict[str, Any]
         The problem definition.
-    method : Dict[str, Any]
+    method : dict[str, Any]
         The method parameters.
 
     Returns
     -------
-    attributes : Dict[str, Any]
+    attributes : dict[str, Any]
         Dictionary with keys:
         pool, project_network, scenarios, crashtime, crashcost, t_init, t_final,
         outlocation, b, b2, alpha, experiment_id, conn, method,
@@ -127,9 +130,9 @@ def initialize_attributes(
 
 
 def branch_bound_algorithm(
-    attributes: Dict[str, Any],
+    attributes: dict[str, Any],
     push_iteration: Callable,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Stochastic Branch & Bound implementation.
 
     Parameters
@@ -160,7 +163,7 @@ def branch_bound_algorithm(
     total_scenarios -= 4 * scen_est_num
 
     # Step 1: Initialization
-    subproblem: Dict[str, Any] = {}
+    subproblem: dict[str, Any] = {}
     variable_list = []
 
     for node in attributes["nodes"]:
@@ -191,10 +194,7 @@ def branch_bound_algorithm(
 
     # Update cov_df matrix
     name = subproblem["name"]
-    cov_df[name] = ""
-    cov_df = cov_df.append([""], ignore_index=True)
-    cov_df.drop([0], axis=1, inplace=True)
-    cov_df.index = np.arange(1, len(cov_df) + 1)
+    cov_df = pd.DataFrame(index=[name], columns=[name])
 
     # Initial KG beliefs (KG_mu, KG_lambda):
     # We start from single problem so we basically do not have beliefs. Later we would
@@ -266,8 +266,8 @@ def branch_bound_algorithm(
 
 
 def partition_record_set(
-    attributes: Dict[str, Any],
-    partition_list: List[Dict[str, Any]],
+    attributes: dict[str, Any],
+    partition_list: list[dict[str, Any]],
     scenario_start_index: int,
     scenario_end_index: int,
 ) -> bool:
@@ -375,10 +375,8 @@ def partition_record_set(
                 cov_df[sub2_name] = ""
 
                 # Add two empty rows for new subproblems
-                s1 = pd.Series(name=sub1_name)
-                s2 = pd.Series(name=sub2_name)
-                cov_df = cov_df.append(s1)
-                cov_df = cov_df.append(s2)
+                new_rows = pd.DataFrame(index=[sub1_name, sub2_name], columns=cov_df.columns)
+                cov_df = pd.concat([cov_df, new_rows])
 
                 # Update with exponential kernel values for the two new rows and columns
                 # and find nearest covariance matrix
@@ -417,8 +415,8 @@ def partition_record_set(
 
 
 def work_on_subproblems(
-    attributes: Dict[str, Any],
-    partition_list: List[Dict[str, Any]],
+    attributes: dict[str, Any],
+    partition_list: list[dict[str, Any]],
     scenario_start_index: int,
     scenario_end_index: int,
 ) -> None:
@@ -498,9 +496,9 @@ def work_on_subproblems(
 
 
 def estimate_bounds(
-    attributes: Dict[str, Any],
-    subproblem: Dict[str, Any],
-    scenarios: List[Any],
+    attributes: dict[str, Any],
+    subproblem: dict[str, Any],
+    scenarios: list[Any],
 ) -> float:
     """Call solver on a given subproblem for all scenarios.
 
@@ -601,10 +599,10 @@ def estimate_bounds(
 
 
 def multisolve_scenarios(
-    attributes: Dict[str, Any],
-    subproblem: Dict[str, Any],
-    scenarios: List[Any],
-) -> List[Any]:
+    attributes: dict[str, Any],
+    subproblem: dict[str, Any],
+    scenarios: list[Any],
+) -> list[Any]:
     """Solves optimization problem for every scenario applied to the given subproblem.
 
     Parameters
@@ -659,9 +657,9 @@ def multisolve_scenarios(
 
 
 def bootstrap_mean_std_estimate(
-    subproblem: Dict[str, Any],
-    attributes: Dict[str, Any],
-) -> Tuple[float, float]:
+    subproblem: dict[str, Any],
+    attributes: dict[str, Any],
+) -> tuple[float, float]:
     """Evaluate a variance-reduction bootstrap method.
 
     Parameters
@@ -712,10 +710,10 @@ def bootstrap_mean_std_estimate(
 
 
 def bootstrap_kg(
-    subproblem: Dict[str, Any],
-    attributes: Dict[str, Any],
-    sample_solutions: List[Any],
-) -> Tuple[float, float]:
+    subproblem: dict[str, Any],
+    attributes: dict[str, Any],
+    sample_solutions: list[Any],
+) -> tuple[float, float]:
     """Evaluate bootstrap for KG samples.
 
     Parameters
@@ -769,10 +767,10 @@ def bootstrap_kg(
 
 
 def assign_scenarios(
-    partition_list: List[Dict[str, Any]],
-    total_scenarios: List[Any],
+    partition_list: list[dict[str, Any]],
+    total_scenarios: list[Any],
     method: str,
-) -> Dict[int, List[Any]]:
+) -> dict[int, list[Any]]:
     """Compute and assign scenarios to nodes of partition_list.
 
     This is done on Random, Random_1, and Distance methods.
@@ -824,10 +822,10 @@ def assign_scenarios(
 
 
 def assign_scenarios_KG(
-    partition_list: List[Dict[str, Any]],
-    total_scenarios: List[Any],
-    attributes: Dict[str, Any],
-) -> Dict[int, List[Any]]:
+    partition_list: list[dict[str, Any]],
+    total_scenarios: list[Any],
+    attributes: dict[str, Any],
+) -> dict[int, list[Any]]:
     """Compute and assign scenarios to nodes of partition_list on KG method Parameter.
 
     Parameters
@@ -881,11 +879,11 @@ def assign_scenarios_KG(
 
 
 def assign_scenarios_pareto(
-    partition_list: List[Dict[str, Any]],
-    total_scenarios: List[Any],
+    partition_list: list[dict[str, Any]],
+    total_scenarios: list[Any],
     beta: float,
     method: str,
-) -> Dict[int, List[Any]]:
+) -> dict[int, list[Any]]:
     """Compute and assign scenarios to nodes of partition_list.
 
     This is done on Pareto Inverse and Pareto_Boltzman methods.
@@ -935,8 +933,8 @@ def assign_scenarios_pareto(
 
 
 def rank_by_distance(
-    partition_list: List[Dict[str, Any]],
-) -> List[float]:
+    partition_list: list[dict[str, Any]],
+) -> list[float]:
     """Ranks nodes in partition list by distance of its (Z_E, Z_std) point.
 
     Parameters
@@ -973,10 +971,10 @@ def rank_by_distance(
 
 
 def pareto_fronts_probabilities(
-    partition_list: List[Dict[str, Any]],
+    partition_list: list[dict[str, Any]],
     beta: float,
     probability_method: str,
-) -> Tuple[int, List, List[float]]:
+) -> tuple[int, List, list[float]]:
     """Get non-dominated fronts and its probabilities.
 
     Parameters
@@ -1043,10 +1041,10 @@ def pareto_fronts_probabilities(
 
 
 def update_row_col(
-    subproblem1: Dict[str, Any],
-    subproblem2: Dict[str, Any],
-    partition_list: List[Dict[str, Any]],
-    attributes: Dict[str, Any],
+    subproblem1: dict[str, Any],
+    subproblem2: dict[str, Any],
+    partition_list: list[dict[str, Any]],
+    attributes: dict[str, Any],
 ) -> None:
     """Update the last two rows and columns of cov_df.
 

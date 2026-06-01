@@ -4,7 +4,7 @@ Alternative implementation of uncrashed scheduling bounds using Pyomo with the
 GLPK open-source solver backend.
 """
 
-from typing import Any, List, Tuple
+from typing import Any
 
 import networkx as nx
 import pyomo.environ as pyo
@@ -19,11 +19,10 @@ import pyomo.environ as pyo
 #     minimize,
 # )
 
-
 def uncrashed_project_time(
     network: nx.DiGraph,
-    scenario: List[float],
-) -> Tuple[float, List[int]]:
+    scenario: list[float],
+) -> tuple[float, list[int]]:
     """Solves the uncrashed unpenalized scheduling problem on a single scenario.
 
     Parameters

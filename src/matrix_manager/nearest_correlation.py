@@ -14,7 +14,6 @@ from numpy import copy, inf
 from numpy.linalg import norm
 from typing import Any
 
-
 class ExceededMaxIterationsError(Exception):
     """Error class for exceeding iterations."""
 
@@ -62,7 +61,6 @@ class ExceededMaxIterationsError(Exception):
             Stored error message.
         """
         return repr(self.msg)
-
 
 def nearcorr(
     symmetric_input_matrix: np.ndarray | ExceededMaxIterationsError,
@@ -174,7 +172,6 @@ def nearcorr(
         X = copy(Y)
 
     return X
-
 
 def proj_spd(A: np.ndarray) -> np.ndarray:
     """Project a symmetric matrix onto the positive semidefinite cone.

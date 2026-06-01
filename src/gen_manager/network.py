@@ -7,7 +7,7 @@ activity networks with configurable node count, layer depth, and edge density.
 import io
 import secrets
 from itertools import product
-from typing import Dict, List, Tuple
+
 
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -20,7 +20,7 @@ SECURE_RANDOM = secrets.SystemRandom()
 def network_skeleton(
     num_nodes: int,
     num_layers: int,
-) -> List[Tuple[int, int]]:
+) -> list[tuple[int, int]]:
     """Generate edge list of network skeleton.
 
     Parameters
@@ -32,7 +32,7 @@ def network_skeleton(
 
     Returns
     -------
-    edges : List[Tuple[int, int]]
+    edges : list[tuple[int, int]]
         List of pairs of nodes comprising the skeleton edges.
     """
     # Generate initial layer partition
@@ -92,7 +92,7 @@ def generate_network(
     num_nodes: int,
     num_layers: int,
     density: float,
-) -> Tuple[nx.DiGraph, bytes, Dict[int, Tuple[float, float]]]:
+) -> tuple[nx.DiGraph, bytes, dict[int, tuple[float, float]]]:
     """Generate a connected network graph.
 
     Parameters

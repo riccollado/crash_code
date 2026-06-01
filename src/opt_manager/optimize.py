@@ -5,17 +5,15 @@ algorithm, and commits experiment metadata and solutions to persistent storage.
 """
 
 import time
-from typing import List, Tuple
 
 from db_manager.driver import initialize_db
 from opt_manager.stochastic import branch_bound_algorithm, initialize_attributes
 
-
 def optimize(
     problem: dict,
     method: dict,
-    seeds: List[int],
-) -> Tuple[int, float, dict]:
+    seeds: list[int],
+) -> tuple[int, float, dict]:
     """Commit problem to db and the branch & bound method.
 
     Parameters

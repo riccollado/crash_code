@@ -9,7 +9,7 @@ functions.
 
 ## Tech stack
 
-- **Language:** Python 3.12 (strict: `>=3.12,<3.13`)
+- **Language:** Python 3.14 (strict: `>=3.14`)
 - **Package manager:** `uv` (lock file: `uv.lock`)
 - **Build backend:** hatchling
 - **Solvers:** Gurobi (primary), Pyomo/GLPK, HiGHS, PuLP, AMPL, CPLEX
@@ -59,11 +59,9 @@ bandit -r src/ --skip=B101,B301,B403,B605,B607  # Security linting
 ## Code conventions
 
 - **Formatting:** 88-character line length (ruff/black compatible)
-- **Type hints:** Required on all function signatures; use `typing` module types and
-  `numpy.typing.NDArray`
+- **Type hints:** Required on all function signatures; use built-in generics (`list[X]`, `dict[K,V]`, `tuple[...]`) for Python 3.9+ style; `typing.Any`/`typing.Callable` still from `typing`; `numpy.typing.NDArray`
 - **Docstrings:** NumPy-style with Parameters/Returns sections
-- **Imports:** stdlib, then third-party, then local; sorted by isort (black profile);
-  no wildcard imports
+- **Imports:** stdlib, then third-party, then local; sorted by ruff; no wildcard imports
 - **Naming:** `snake_case` for functions/variables, `UPPER_CASE` for constants
 - **Security:** Uses `secrets.SystemRandom()` for randomness; DB credentials via
   environment variables
